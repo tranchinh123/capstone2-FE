@@ -1,14 +1,12 @@
 import { Suspense } from 'react';
-import { LoadingLazyComponent } from '../loading-page';
+import { LoadingLazyComponent } from '../loading-lazy-page';
+import { Layout } from 'antd';
 
-import { FaList, FaRegFileExcel } from 'react-icons/fa';
-import { Layout, Menu, theme } from 'antd';
-const { Header, Sider, Content } = Layout;
+import AppHeader from './header';
+import AppContent from './content';
+import AppSider from './sider';
 
 const AppLayout = ({ children, allow }) => {
-  const {
-    token: { colorBgContainer, borderRadiusLG }
-  } = theme.useToken();
   console.log(allow);
   return (
     <Suspense fallback={<LoadingLazyComponent />}>
@@ -17,43 +15,10 @@ const AppLayout = ({ children, allow }) => {
           minHeight: '100vh'
         }}
       >
-        <Sider collapsed={true}>
-          <div className="demo-logo-vertical" />
-          <Menu
-            theme="dark"
-            mode="inline"
-            defaultSelectedKeys={['/course']}
-            items={[
-              {
-                key: '/course',
-                icon: <FaList />,
-                label: 'Courses'
-              },
-              {
-                key: '/analytics',
-                icon: <FaRegFileExcel />,
-                label: 'Analytics'
-              }
-            ]}
-          />
-        </Sider>
+        <AppSider />
         <Layout>
-          <Header
-            style={{
-              padding: 0,
-              background: colorBgContainer
-            }}
-          ></Header>
-          <Content
-            style={{
-              margin: '24px 16px',
-              padding: 24,
-              background: colorBgContainer,
-              borderRadius: borderRadiusLG
-            }}
-          >
-            {children}
-          </Content>
+          <AppHeader />
+          <AppContent>{children}</AppContent>
         </Layout>
       </Layout>
     </Suspense>

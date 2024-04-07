@@ -1,6 +1,6 @@
-import { Spin } from 'antd';
 import { useEffect, useState, createContext, useContext } from 'react';
 import LoginModal from '../components/common/modal/LoginModal';
+import Spin from '../components/common/spin';
 
 export const MainContext = createContext({});
 
@@ -8,11 +8,16 @@ const MainContextProvider = ({ children }) => {
   const [userInfo, setUserInfo] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSpinning, setIsSpinning] = useState(false);
 
-  useEffect(() => {}, []);
+  useEffect(() => { }, []);
 
   const showModal = () => {
     setIsModalOpen(true);
+  };
+
+  window.showLoading = (status) => {
+    setIsSpinning(status);
   };
 
   return (
@@ -35,6 +40,7 @@ const MainContextProvider = ({ children }) => {
         </div>
       ) : (
         <div style={{ maxWidth: '2000px', margin: '0 auto' }}>
+          {isSpinning && <Spin />}
           <LoginModal
             isModalOpen={isModalOpen}
             setIsModalOpen={setIsModalOpen}

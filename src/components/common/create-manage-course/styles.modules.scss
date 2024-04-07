@@ -1,0 +1,14 @@
+.createAndManageCourse {
+    .createAndManageCourseHeader {
+      display: flex;
+      justify-content: space-between;
+      h1 {
+        font-size: 26px;
+        font-weight: normal;
+      }
+      .createAndManageCourseAction {
+        display: flex;
+        gap: 10px;
+      }
+    }
+  }

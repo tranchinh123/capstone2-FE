@@ -1,3 +1,4 @@
+
 export const routers = [
   {
     exact: true,
@@ -7,8 +8,22 @@ export const routers = [
   },
   {
     exact: true,
-    path: '/course',
-    component: 'course',
+    path: '/courses',
+    component: 'courses',
+    noHeader: true,
+    allow: ['learner', 'teacher']
+  },
+  {
+    exact: true,
+    path: '/course-create',
+    component: 'course-create',
+    noHeader: true,
+    allow: ['learner', 'teacher']
+  },
+  {
+    exact: true,
+    path: '/course-manage-description',
+    component: 'course-manage-description',
     noHeader: true,
     allow: ['learner', 'teacher']
   }

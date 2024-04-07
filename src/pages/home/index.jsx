@@ -10,7 +10,7 @@ const HomePage = () => {
     <>
       {/* {userRole === 'admin' && } */}
       {(userRole === 'teacher' || userRole === 'learner') && (
-        <Navigate to="/course" />
+        <Navigate to="/courses" />
       )}
     </>
   );
