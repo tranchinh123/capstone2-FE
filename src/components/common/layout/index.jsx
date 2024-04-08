@@ -6,22 +6,28 @@ import AppHeader from './header';
 import AppContent from './content';
 import AppSider from './sider';
 
-const AppLayout = ({ children, allow }) => {
-  console.log(allow);
+const AppLayout = ({ children, allow, ...others }) => {
+  console.log(others.noLayout);
   return (
-    <Suspense fallback={<LoadingLazyComponent />}>
-      <Layout
-        style={{
-          minHeight: '100vh'
-        }}
-      >
-        <AppSider />
-        <Layout>
-          <AppHeader />
-          <AppContent>{children}</AppContent>
-        </Layout>
-      </Layout>
-    </Suspense>
+    <>
+      {others.noLayout ? (
+        children
+      ) : (
+        <Suspense fallback={<LoadingLazyComponent />}>
+          <Layout
+            style={{
+              minHeight: '100vh'
+            }}
+          >
+            <AppSider />
+            <Layout>
+              <AppHeader />
+              <AppContent>{children}</AppContent>
+            </Layout>
+          </Layout>
+        </Suspense>
+      )}
+    </>
   );
 };
 

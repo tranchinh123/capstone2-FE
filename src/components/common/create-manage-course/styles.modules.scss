@@ -1,4 +1,6 @@
 .createAndManageCourse {
+  height: 80vh;
+  overflow-y: scroll;
     .createAndManageCourseHeader {
       display: flex;
       justify-content: space-between;

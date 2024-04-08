@@ -17,7 +17,12 @@ const DragDropList = ({
 }) => {
   return (
     <>
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between'
+        }}
+      >
         <h1
           style={{
             color: '#838F99',
@@ -38,7 +43,7 @@ const DragDropList = ({
       <div
         id="scrollableDiv"
         style={{
-          height: '80vh',
+          height: '70vh',
           overflow: 'auto',
           padding: '0 16px'
         }}

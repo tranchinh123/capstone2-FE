@@ -1,18 +1,17 @@
 import { useEffect, useState } from 'react';
 import { Breadcrumb } from 'antd';
 import { arrayMove } from '@dnd-kit/sortable';
-import CreateChapterVideoModal from '../../../../components/common/modal/CreateChapterVideoModal';
-import VideoItem from './VideoItem';
+import CreateChapterLessonModal from '../../../../components/common/modal/CreateChapterLessonModal';
+import LessonItem from './LessonItem';
 import DragDropList from '../DragDropList';
 
-const CourseChapterVideos = ({
+const CourseChapterLessons = ({
   selectedChapterId,
   handleShowListOfChapter
 }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [IsCreateChapterModalOpen, setIsCreateChapterModalOpen] =
-    useState(false);
+  const [isCreateLessonModalOpen, setIsCreateLessonModalOpen] = useState(false);
 
   const loadMoreData = () => {
     if (loading) {
@@ -48,7 +47,7 @@ const CourseChapterVideos = ({
   };
 
   const handleOpenModal = () => {
-    setIsCreateChapterModalOpen(true);
+    setIsCreateLessonModalOpen(true);
   };
 
   return (
@@ -64,25 +63,25 @@ const CourseChapterVideos = ({
             )
           },
           {
-            title: 'Chapter videos'
+            title: 'Chapter lessons'
           }
         ]}
       />
-      <CreateChapterVideoModal
-        isModalOpen={IsCreateChapterModalOpen}
-        setIsModalOpen={setIsCreateChapterModalOpen}
+      <CreateChapterLessonModal
+        isModalOpen={isCreateLessonModalOpen}
+        setIsModalOpen={setIsCreateLessonModalOpen}
       />
       <DragDropList
         handleDragEnd={handleDragEnd}
         data={data}
         handleOpenModal={handleOpenModal}
         handleShowDetail={handleOpenModal}
-        buttonText="New video"
-        title="Videos"
-        Item={VideoItem}
+        buttonText="New lesson"
+        title="Lesson"
+        Item={LessonItem}
       />
     </>
   );
 };
 
-export default CourseChapterVideos;
+export default CourseChapterLessons;

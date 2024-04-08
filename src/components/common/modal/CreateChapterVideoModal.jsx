@@ -1,7 +1,7 @@
-import { Button, Form, Input, Modal, Upload } from 'antd';
+import { Button, Form, Input, Modal, Upload, Select } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 
-const CreateChapterVideoModal = ({ isModalOpen, setIsModalOpen }) => {
+const CreateChapterLessonModal = ({ isModalOpen, setIsModalOpen }) => {
   const [form] = Form.useForm();
 
   const onFinish = (values) => {
@@ -10,7 +10,7 @@ const CreateChapterVideoModal = ({ isModalOpen, setIsModalOpen }) => {
 
   return (
     <Modal
-      title="Create chapter video"
+      title="Create chapter lesson"
       open={isModalOpen}
       onCancel={() => setIsModalOpen(false)}
       footer={() => <></>}
@@ -45,6 +45,29 @@ const CreateChapterVideoModal = ({ isModalOpen, setIsModalOpen }) => {
             <Button icon={<UploadOutlined />}>Upload</Button>
           </Upload>
         </Form.Item>
+        <Form.Item label="Excercise" name="resource">
+          <Select
+            showSearch
+            placeholder="Search to Select"
+            // optionFilterProp="children"
+            filterOption={(input, option) =>
+              (option?.label ?? '')
+                .toLocaleLowerCase()
+                .includes(input.toLocaleLowerCase())
+            }
+            // defaultValue={'1'}
+            options={[
+              {
+                value: '1',
+                label: 'Not Identified'
+              },
+              {
+                value: '2',
+                label: 'Closed'
+              }
+            ]}
+          />
+        </Form.Item>
         <Form.Item style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <Button htmlType="submit" type="primary">
             Create
@@ -55,4 +78,4 @@ const CreateChapterVideoModal = ({ isModalOpen, setIsModalOpen }) => {
   );
 };
 
-export default CreateChapterVideoModal;
+export default CreateChapterLessonModal;

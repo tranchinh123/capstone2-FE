@@ -1,9 +1,12 @@
 import { Layout, Menu } from 'antd';
+import { useNavigate } from 'react-router-dom';
 const { Sider } = Layout;
 
 import { FaList, FaRegFileExcel } from 'react-icons/fa';
 
 const AppSider = () => {
+    const navigate = useNavigate();
+
     return (
         <Sider collapsed={true}>
             <div className="demo-logo-vertical" />
@@ -13,14 +16,27 @@ const AppSider = () => {
                 defaultSelectedKeys={['/course']}
                 items={[
                     {
-                        key: '/course',
+                        key: '/courses',
                         icon: <FaList />,
-                        label: 'Courses'
+                        label: 'Courses',
+                        onClick: () => navigate('/courses')
                     },
                     {
-                        key: '/analytics',
+                        key: '/materials',
                         icon: <FaRegFileExcel />,
-                        label: 'Analytics'
+                        label: 'Materials',
+                        children: [
+                            {
+                                key: '/materials/excercise',
+                                label: 'Manage excercises',
+                                onClick: () => navigate('/excercise')
+                            },
+                            {
+                                key: '/materials/question',
+                                label: 'Manange questions',
+                                onClick: () => navigate('/question')
+                            }
+                        ]
                     }
                 ]}
             />

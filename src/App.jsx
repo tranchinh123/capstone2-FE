@@ -9,9 +9,7 @@ import NotFoundPage from './pages/404';
 const Components = {};
 
 routers.forEach((route) => {
-  Components[route.component] = lazy(() =>
-    import(`./pages/${route.component}`)
-  );
+  Components[route.component] = lazy(() => import(`./pages/${route.direct}`));
 });
 
 const App = () => {
@@ -26,7 +24,7 @@ const App = () => {
                 key={index}
                 {...router}
                 element={
-                  <AppLayout allow={router.allow}>
+                  <AppLayout allow={router.allow} {...router}>
                     <Component />
                   </AppLayout>
                 }
@@ -43,7 +41,7 @@ const App = () => {
           />
         </Routes>
       </Router>
-    </MainContextProvider>
+    </MainContextProvider >
   );
 };
 

@@ -3,7 +3,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { MdDragIndicator, MdEdit } from 'react-icons/md';
 
-const VideoItem = ({ item, handleShowVideoDetail }) => {
+const LessonItem = ({ item, handleShowVideoDetail }) => {
     const { attributes, listeners, setNodeRef, transform, transition } =
         useSortable({ id: item.email });
     const style = {
@@ -39,14 +39,14 @@ const VideoItem = ({ item, handleShowVideoDetail }) => {
                 // description={item.email}
                 />
                 <div style={{ display: 'flex', gap: '20px', fontSize: '20px' }}>
-                <MdEdit
-                style={{ cursor: 'pointer' }}
-                onClick={() => handleShowVideoDetail()}
-                />
+                    <MdEdit
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => handleShowVideoDetail()}
+                    />
                 </div>
             </List.Item>
         </div>
     );
 };
 
-export default VideoItem;
+export default LessonItem;

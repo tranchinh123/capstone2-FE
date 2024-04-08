@@ -1,41 +1,36 @@
-import { useState, useEffect } from 'react';
-import { useParams } from 'react-router';
-import OfflineCourseManageContent from './offline';
-import OnlineCourseManageContent from './online';
+import { useState } from 'react';
+import CourseChapters from './course-chapters';
+import CourseChapterLessons from './course-chapter-lessons';
 
-const CourseManageContentPage = () => {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const { id } = useParams();
+const OfflineCourseManageContent = ({ data, setData }) => {
+  const [selectedChapterId, setSelectedChapterId] = useState(null);
+  const [isShowChapterDetail, setIsShowChapterDetail] = useState(false);
 
-  const loadMoreData = () => {
-    if (loading) {
-      return;
-    }
-    setLoading(true);
-    fetch(
-      'https://randomuser.me/api/?results=10&inc=name,gender,email,nat,picture&noinfo'
-    )
-      .then((res) => res.json())
-      .then((body) => {
-        setData([...data, ...body.results]);
-        setLoading(false);
-      })
-      .catch(() => {
-        setLoading(false);
-      });
+  const handleShowListOfChapter = () => {
+    setIsShowChapterDetail(false);
   };
 
-  useEffect(() => {
-    loadMoreData();
-  }, []);
+  const handleShowChapterDetail = () => {
+    setIsShowChapterDetail(true);
+    // setSelectedChapterId()
+  };
 
   return (
     <>
-      <OnlineCourseManageContent data={data} setData={setData} />
-      {/* <OfflineCourseManageContent data={data} setData={setData} /> */}
+      {isShowChapterDetail ? (
+        <CourseChapterLessons
+          selectedChapterId={selectedChapterId}
+          handleShowListOfChapter={handleShowListOfChapter}
+        />
+      ) : (
+        <CourseChapters
+          data={data}
+          setData={setData}
+          handleShowChapterDetail={handleShowChapterDetail}
+        />
+      )}
     </>
   );
 };
 
-export default CourseManageContentPage;
+export default OfflineCourseManageContent;
