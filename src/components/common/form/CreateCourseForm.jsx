@@ -1,6 +1,5 @@
-
 // import { useState } from 'react';
-import { Button, Form, Input, Upload, InputNumber } from 'antd';
+import { Button, Form, Input, Upload, InputNumber, Select } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 
 import ReactQuill from 'react-quill';
@@ -32,6 +31,30 @@ const CreateCourseForm = () => {
         ]}
       >
         <Input />
+      </Form.Item>
+      <Form.Item
+        label="Course type"
+        name="type"
+        rules={[
+          {
+            required: true
+          }
+        ]}
+      >
+        <Select
+          // defaultValue="lucy"
+          // onChange={handleChange}
+          options={[
+            {
+              value: 0,
+              label: 'Online'
+            },
+            {
+              value: 1,
+              label: 'Offline'
+            }
+          ]}
+        />
       </Form.Item>
       <Form.Item
         label="Course price"

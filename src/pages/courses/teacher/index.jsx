@@ -10,7 +10,10 @@ const TeacherCoursePage = () => {
     const items = [
         {
             label: (
-                <a type="button" onClick={() => navigate('/course-create')}>
+                <a
+                type="button"
+                onClick={() => navigate('/course-manage-description/1')}
+                >
                     Manage course description
                 </a>
             ),
@@ -18,7 +21,7 @@ const TeacherCoursePage = () => {
         },
         {
             label: (
-                <a type="button" onClick={() => navigate('/')}>
+                <a type="button" onClick={() => navigate('/course-manage-content/1')}>
                     Manage course content
                 </a>
             ),
