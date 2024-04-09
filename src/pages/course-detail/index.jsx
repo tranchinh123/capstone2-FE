@@ -1,5 +1,4 @@
 import { Collapse, Button } from 'antd';
-import { FaHeart } from 'react-icons/fa';
 import ListVideoInChapter from './list-video-in-chapter';
 import styles from './styles.module.scss';
 
@@ -41,9 +40,6 @@ const CourseDetailPage = () => {
           </p>
           <span>Created by YouAccel Training</span>
           <div style={{ alignSelf: 'flex-end' }}>
-            <Button type="text">
-              <FaHeart style={{ color: 'white', fontSize: '18px' }} />
-            </Button>
             <Button
               type="primary"
               style={{
@@ -52,7 +48,6 @@ const CourseDetailPage = () => {
                 marginLeft: '20px'
               }}
             >
-              Buy now
             </Button>
           </div>
         </div>

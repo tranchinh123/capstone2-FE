@@ -2,7 +2,7 @@ import { Layout, Menu } from 'antd';
 import { useNavigate } from 'react-router-dom';
 const { Sider } = Layout;
 
-import { FaList, FaRegFileExcel } from 'react-icons/fa';
+import { FaList, FaRegFileExcel, FaCalendarAlt } from 'react-icons/fa';
 
 const AppSider = () => {
     const navigate = useNavigate();
@@ -37,6 +37,12 @@ const AppSider = () => {
                                 onClick: () => navigate('/question')
                             }
                         ]
+                    },
+                    {
+                      key: '/schedule',
+                      icon: <FaCalendarAlt />,
+                      label: 'Schedule',
+                      onClick: () => navigate('/schedule')
                     }
                 ]}
             />

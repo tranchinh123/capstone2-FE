@@ -1,0 +1,63 @@
+.offlineCourseLearning {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    gap: 30px;
+  
+    @media (max-width: 1100px) {
+      grid-template-columns: 1fr;
+    }
+  
+    video {
+      width: 100%;
+    }
+    .chapterContainer {
+      display: flex;
+      flex-direction: column;
+    }
+    .chapterWrapper {
+      cursor: pointer;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 15px;
+      padding: 10px;
+      &:hover {
+        background: #d6d9db;
+      }
+      .checkBox {
+        margin-top: 4px;
+      }
+      .chapterItem {
+        display: flex;
+        align-items: flex-start;
+        gap: 20px;
+        .itemInfo {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          .timeName {
+            font-size: 16px;
+          }
+          .itemTime {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            .itemTimeIcon {
+              font-size: 20px;
+            }
+            .itemTimeText {
+              font-size: 14px;
+            }
+          }
+        }
+      }
+    }
+  
+    .collapseWrapper {
+      overflow-y: scroll;
+      height: 80vh;
+      @media (max-width: 1100px) {
+        height: 40vh;
+      }
+    }
+  }

@@ -64,9 +64,9 @@ export const routers = [
   },
   {
     exact: true,
-    path: '/course-learning',
-    direct: 'course-learning',
-    component: 'course-learning',
+    path: '/course-learning/online/:id',
+    direct: 'course-learning/online',
+    component: 'online',
     noHeader: true,
     noLayout: true
   },
@@ -90,6 +90,14 @@ export const routers = [
     path: '/question/create',
     direct: 'question/create',
     component: 'create',
+    noHeader: true,
+    allow: ['learner', 'teacher']
+  },
+  {
+    exact: true,
+    path: '/schedule',
+    direct: 'schedule',
+    component: 'schedule',
     noHeader: true,
     allow: ['learner', 'teacher']
   }

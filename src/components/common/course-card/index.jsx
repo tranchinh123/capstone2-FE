@@ -1,49 +1,69 @@
-import { Card, Progress } from 'antd';
-import { IoBookOutline } from 'react-icons/io5';
+import { Card } from "antd";
+import { useNavigate } from "react-router-dom";
+import { IoBookOutline } from "react-icons/io5";
 
-const CourseCard = () => (
-  <Card
-    style={{
-      width: 320,
-      borderRadius: '8px'
-    }}
-  >
-    <img
-      style={{
-        width: '100%',
-        height: '150px',
-        objectFit: 'cover',
-        borderRadius: '8px'
-      }}
-      src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSX8CFwswJggZBDP67N7_y6Kul4C60ACf7QgvsKwsztCkdtudAyERD19rdJuHWWRcPd5iQ&usqp=CAU"
-      alt=""
-    />
-    <h3 style={{ color: '#3F7C93' }}>Cinematic Techniques</h3>
-    <p style={{ color: '#848588', marginBottom: '5px' }}>Filming</p>
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '5px'
-      }}
-    >
-      <span
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          background: '#DAF4FF',
-          padding: '6px',
-          paddingTop: '9px',
-          borderRadius: '50%'
-        }}
-      >
-        <IoBookOutline />
-      </span>
-      <span>4 Chapters</span>
-    </div>
-    <Progress percent={30} strokeColor="#3E98C3" showInfo={false} />
-    <p>100% Complete</p>
-  </Card>
-);
+const CourseCard = () => {
+  const navigate = useNavigate();
+
+  return (
+    <Card>
+      <div style={{ display: "flex", gap: "30px" }}>
+        <img
+          style={{
+            width: "300px",
+            height: "150px",
+            objectFit: "cover",
+            borderRadius: "8px",
+          }}
+          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSX8CFwswJggZBDP67N7_y6Kul4C60ACf7QgvsKwsztCkdtudAyERD19rdJuHWWRcPd5iQ&usqp=CAU"
+          alt=""
+        />
+        <div>
+          <h2
+            style={{ color: "#3F7C93", cursor: "pointer" }}
+            onClick={() => navigate("/courses/123123")}
+          >
+            Cinematic Techniques
+          </h2>
+          <p style={{ color: "#848588", marginBottom: "5px" }}>
+            Dive in and learn React.js from scratch! Learn React, Hooks, Redux,
+            React Router, Next.js, Best Practices and way more!
+          </p>
+          <p
+            style={{
+              color: "#848588",
+              marginBottom: "5px",
+              fontSize: "12px",
+              fontWeight: "400",
+            }}
+          >
+            Maximilian Schwarzmüller
+          </p>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "5px",
+            }}
+          >
+            <span
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                background: "#DAF4FF",
+                padding: "6px",
+                paddingTop: "9px",
+                borderRadius: "50%",
+              }}
+            >
+              <IoBookOutline />
+            </span>
+            <span>4 Chapters - 68.5 hours</span>
+          </div>
+        </div>
+      </div>
+    </Card>
+  );
+};
 export default CourseCard;

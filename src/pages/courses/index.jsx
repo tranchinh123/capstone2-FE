@@ -7,8 +7,9 @@ const CoursePage = () => {
 
   return (
     <>
-      {userRole === 'teacher' && <TeacherCoursePage />}
-      {userRole === 'learner' && <LearnerCoursePage />}
+      {/* {userRole === 'teacher' && <TeacherCoursePage />} */}
+      {/* {userRole === 'learner' && <LearnerCoursePage />} */}
+      {userRole === 'teacher' && <LearnerCoursePage />}
     </>
   );
 };

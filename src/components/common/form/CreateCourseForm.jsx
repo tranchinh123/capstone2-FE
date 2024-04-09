@@ -1,17 +1,17 @@
 // import { useState } from 'react';
-import { Button, Form, Input, Upload, InputNumber, Select } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
+import { Button, Form, Input, Upload, Select } from "antd";
+import { UploadOutlined } from "@ant-design/icons";
 
-import ReactQuill from 'react-quill';
-import { modules } from '../../../constants/RichTextEditorModules';
-import 'react-quill/dist/quill.snow.css';
-import styles from './styles.module.scss';
+import ReactQuill from "react-quill";
+import { modules } from "../../../constants/RichTextEditorModules";
+import "react-quill/dist/quill.snow.css";
+import styles from "./styles.module.scss";
 
 const CreateCourseForm = () => {
   const [form] = Form.useForm();
 
   const onFinish = (values) => {
-    console.log(values, 'values');
+    console.log(values, "values");
   };
 
   return (
@@ -26,8 +26,8 @@ const CreateCourseForm = () => {
         name="name"
         rules={[
           {
-            required: true
-          }
+            required: true,
+          },
         ]}
       >
         <Input />
@@ -37,8 +37,8 @@ const CreateCourseForm = () => {
         name="type"
         rules={[
           {
-            required: true
-          }
+            required: true,
+          },
         ]}
       >
         <Select
@@ -47,49 +47,55 @@ const CreateCourseForm = () => {
           options={[
             {
               value: 0,
-              label: 'Online'
+              label: "Online",
             },
             {
               value: 1,
-              label: 'Offline'
-            }
+              label: "Offline",
+            },
           ]}
         />
       </Form.Item>
       <Form.Item
-        label="Course price"
-        name="price"
+        label="Course instructor"
+        name="type"
         rules={[
           {
-            required: true
-          }
+            required: true,
+          },
         ]}
       >
-        <InputNumber
-          style={{ width: '100%' }}
-          // defaultValue={20}
-          formatter={(value) =>
-            `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-          }
-          parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
-          onChange={() => { }}
+        <Select
+          // defaultValue="lucy"
+          // onChange={handleChange}
+          options={[
+            {
+              value: 0,
+              label: "Alan",
+            },
+            {
+              value: 1,
+              label: "Henry",
+            },
+          ]}
         />
       </Form.Item>
+      
       <Form.Item
         label="Course Image"
         name="title"
         rules={[
           {
-            required: true
-          }
+            required: true,
+          },
         ]}
       >
         <Upload
           name="file"
           action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
           listType="picture"
-          onChange={(info) => console.log(info.file, 'info')}
-          style={{ borderColor: '' }}
+          onChange={(info) => console.log(info.file, "info")}
+          style={{ borderColor: "" }}
         >
           <Button icon={<UploadOutlined />}>Upload</Button>
         </Upload>
@@ -117,13 +123,13 @@ const CreateCourseForm = () => {
           // action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
           // listType="picture"
           beforeUpload={() => false}
-          onChange={(info) => console.log(info.file, 'info')}
-          style={{ borderColor: '' }}
+          onChange={(info) => console.log(info.file, "info")}
+          style={{ borderColor: "" }}
         >
           <Button icon={<UploadOutlined />}>Upload</Button>
         </Upload>
       </Form.Item>
-      <Form.Item style={{ display: 'flex', justifyContent: 'flex-end' }}>
+      <Form.Item style={{ display: "flex", justifyContent: "flex-end" }}>
         <Button htmlType="submit" type="primary">
           Create
         </Button>
