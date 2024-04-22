@@ -10,9 +10,9 @@ const OfflineCourseManageContent = ({ data, setData }) => {
     setIsShowChapterDetail(false);
   };
 
-  const handleShowChapterDetail = () => {
+  const handleShowChapterDetail = (id) => {
     setIsShowChapterDetail(true);
-    // setSelectedChapterId()
+    setSelectedChapterId(id);
   };
 
   return (

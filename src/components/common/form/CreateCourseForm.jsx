@@ -110,6 +110,7 @@ const CreateCourseForm = ({ propCourse }) => {
             return false;
           }}
           fileList={image}
+          maxCount={1}
         >
           <Button icon={<UploadOutlined />}>Upload</Button>
         </Upload>

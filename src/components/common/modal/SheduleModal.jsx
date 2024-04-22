@@ -24,16 +24,7 @@ const SheduleModal = ({ isModalOpen, setIsModalOpen, schedules }) => {
     };
 
     return (
-        // <Modal
-        //     title="Schedules"
-        //     open={isModalOpen}
-        //     onCancel={() => setIsModalOpen(false)}
-        //     footer={() => <></>}
-        //     style={{
-        //         top: 20
-        //     }}
-        //     width="90%"
-        // >
+       
             <FullCalendar
                 eventBackgroundColor="#2C3E50"
                 height="85vh"
@@ -43,7 +34,7 @@ const SheduleModal = ({ isModalOpen, setIsModalOpen, schedules }) => {
                 eventClick={handleEventClick}
                 eventContent={eventContent}
             />
-        // </Modal>
+       
     );
 };
 

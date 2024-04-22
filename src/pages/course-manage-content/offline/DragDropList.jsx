@@ -9,6 +9,7 @@ import {
 const DragDropList = ({
   handleDragEnd,
   data,
+  setData,
   handleOpenModal,
   handleShowDetail,
   buttonText,
@@ -40,36 +41,40 @@ const DragDropList = ({
           {buttonText}
         </Button>
       </div>
-      <div
-        id="scrollableDiv"
-        style={{
-          height: '70vh',
-          overflow: 'auto',
-          padding: '0 16px'
-        }}
-      >
-        <DndContext
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
-        >
-          <SortableContext
-            items={data.map((d) => d.email)}
-            strategy={verticalListSortingStrategy}
-          >
-            <List
-              dataSource={data}
-              renderItem={(item) => (
-                <Item
-                  key={item.email}
-                  item={item}
-                  handleShowVideoDetail={handleShowDetail}
-                  handleShowChapterDetail={handleShowDetail}
-                />
-              )}
-            />
-          </SortableContext>
-        </DndContext>
-      </div>
+      {data && (
+       <div
+       id="scrollableDiv"
+       style={{
+         height: '70vh',
+         overflow: 'auto',
+         padding: '0 16px'
+       }}
+     >
+       <DndContext
+         collisionDetection={closestCenter}
+         onDragEnd={handleDragEnd}
+       >
+         <SortableContext
+           items={data.map((d) => d.id)}
+           strategy={verticalListSortingStrategy}
+         >
+           <List
+             dataSource={data}
+             renderItem={(item) => (
+               <Item
+                 key={item.id}
+                 item={item}
+                 handleShowVideoDetail={handleShowDetail}
+                 handleShowChapterDetail={handleShowDetail}
+                 handleOpenModal={handleOpenModal}
+                 setData={setData}
+               />
+             )}
+           />
+         </SortableContext>
+       </DndContext>
+     </div>
+     )}
     </>
   );
 };
