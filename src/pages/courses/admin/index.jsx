@@ -1,91 +1,95 @@
+import { useEffect, useState } from 'react';
 import { Table, Tag, Dropdown, Button } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { BsThreeDots } from 'react-icons/bs';
+import useAxios from '../../../hooks/useAxios';
 
 const AdminCoursePage = () => {
-    const navigate = useNavigate();
+  const [courses, setCourses] = useState();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);  
+  const [selectedCourse, setSelectedCourse] = useState();
+  const { api } = useAxios();
+  const navigate = useNavigate();
   
-    const items = [
-        {
-          label: (
-            <a
-              type="button"
-              onClick={() => navigate('/course-manage-description/1')}
-            >
-              Manage course description
-            </a>
-          ),
-          key: '0'
-        },
-        {
-          label: (
-            <a type="button" onClick={() => navigate('/course-manage-content/1')}>
-              Manage course content
-            </a>
-          ),
-          key: '1'
-        }
-      ];
-      
-      const columns = [
-        {
-          title: 'Title',
-          dataIndex: 'title',
-          key: 'title'
-        },
-        {
-          title: 'Description',
-          dataIndex: 'description',
-          key: 'description',
-          ellipsis: {
-            showTitle: true,
-          },
-        },
-        {
-          title: 'Instructor',
-          dataIndex: 'instructor',
+  const items = [
+    {
+      label: (
+        <a
+          type="button"
+          onClick={() => navigate(`/course-manage-description/${selectedCourse}`)}
+        >
+          Manage course description
+        </a>
+      ),
+      key: '0'
+    },
+    {
+      label: (
+        <a type="button" onClick={() => navigate(`/course-manage-content/${selectedCourse}`)}>
+          Manage course content
+        </a>
+      ),
+      key: '1'
+    }
+  ];
+
+  const columns = [
+    {
+      title: 'Name',
+      dataIndex: 'cource_name',
+      key: 'cource_name'
+    },
+    {
+      title: 'Introduction',
+      dataIndex: 'cource_introduce',
+      key: 'cource_introduce',
+      ellipsis: {
+        showTitle: true,
+      },
+    },
+    {
+      title: 'Instructor',
+      dataIndex: 'instructor',
       key: 'instructor'
     },
     {
       title: 'Type',
-      key: 'type',
-      dataIndex: 'type',
-      render: (_, { type }) => (
-        <>
-          {type.map((t) => {
-            return <span key={t}>{t.toUpperCase()}</span>;
-          })}
-        </>
-      )
+      key: 'cource_type',
+      dataIndex: 'cource_type',
+      render: (_, { cource_type }) => {
+        const text = cource_type === 0 ? 'Online' : 'Offline';
+        return (
+          <span>{text}</span>
+        )
+      }
     },
     {
       title: 'Status',
-      key: 'status',
-      dataIndex: 'status',
-      render: (_, { status }) => (
-        <>
-          {status.map((t) => {
-            let color = t.length > 7 ? 'cyan' : 'green';
-            return (
-              <Tag color={color} key={t}>
-                {t.toUpperCase()}
-              </Tag>
-            );
-          })}
-        </>
-      )
+      key: 'is_block',
+      dataIndex: 'is_block',
+      render: (_, { is_block }) => {
+        let color = is_block === 1 ? 'cyan' : 'green';
+        let text = is_block === 1 ? 'PUBLIC' : 'UNPUBLIC';
+        return (
+          <Tag color={color}>
+            {text}
+          </Tag>
+        )
+      }
     },
     {
       title: '',
       key: 'action',
       // render: (_, record) => (
-      render: () => (
+      render: (_, record) => (
         <Dropdown
           menu={{
             items
           }}
           trigger={['click']}
+          onClick={() => setSelectedCourse(record.id)}
         >
           <a style={{ color: 'black' }} onClick={(e) => e.preventDefault()}>
             <BsThreeDots />
@@ -94,40 +98,26 @@ const AdminCoursePage = () => {
       )
     }
   ];
-  
-  const data = [
-    {
-      key: '1',
-      title: 'John Brown',
-      description:
-        'The licensing of count nouns as arguments can be implemented by articles, by the plural, by demonstratives, by quantifiers.',
-      instructor: 'Rajeev Suresh',
-      address: 'New York No. 1 Lake Park',
-      type: ['offline'],
-      status: ['public']
-    },
-    {
-      key: '2',
-      title: 'Jim Green',
-      description:
-        'The licensing of count nouns as arguments can be implemented by articles, by the plural, by demonstratives, by quantifiers.',
-      instructor: 'Rajeev Suresh',
-      address: 'London No. 1 Lake Park',
-      type: ['online'],
-      status: ['unpublic']
-    },
-    {
-      key: '3',
-      title: 'Joe Black',
-      description:
-        'The licensing of count nouns as arguments can be implemented by articles, by the plural, by demonstratives, by quantifiers.',
-      instructor: 'Rajeev Suresh',
-      address: 'Sydney No. 1 Lake Park',
-      type: ['offline'],
-      status: ['public']
-    }
-  ];
 
+  const getCourses = async () => {
+    window.showLoading(true);
+    try {
+      const { data } = await api.post('/admin/cource/get-data?page=1', {
+        cource_name: ''
+      });
+      setCurrentPage(data.cources.current_page);
+      setTotalPage(data.cources.last_page);
+      setCourses(data.cources.data);
+      window.showLoading(false);
+    } catch (error) {
+      window.showLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    getCourses();
+  }, []);
+  
   return (
     <>
       <div
@@ -145,7 +135,7 @@ const AdminCoursePage = () => {
           New Course
         </Button>
       </div>
-      <Table columns={columns} dataSource={data} />
+      <Table columns={columns} dataSource={courses} />
     </>
   );
 };
