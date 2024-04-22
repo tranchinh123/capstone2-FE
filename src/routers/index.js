@@ -8,6 +8,14 @@ export const routers = [
   },
   {
     exact: true,
+    path: '/login',
+    direct: 'login',
+    component: 'login',
+    noHeader: true,
+    noLayout: true
+  },
+  {
+    exact: true,
     path: '/courses',
     direct: 'courses',
     component: 'courses',

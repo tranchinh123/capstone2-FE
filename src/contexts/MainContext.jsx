@@ -1,20 +1,37 @@
 import { useEffect, useState, createContext, useContext } from 'react';
-import LoginModal from '../components/common/modal/LoginModal';
 import Spin from '../components/common/spin';
+// import { ROLES } from '../constants/roles';
+import useAxios from '../hooks/useAxios';
 
 export const MainContext = createContext({});
 
 const MainContextProvider = ({ children }) => {
-  const [userInfo, setUserInfo] = useState();
+  const [user, setUser] = useState();
   const [isLoading, setIsLoading] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSpinning, setIsSpinning] = useState(false);
+  const { api }  = useAxios();
 
-  useEffect(() => { }, []);
-
-  const showModal = () => {
-    setIsModalOpen(true);
+  const getUser = async () => {
+    setIsLoading(true);
+    try {
+      const { data } = await api.get("/me");
+      setUser({
+        email: data.user.email,
+        name: data.user.full_name,
+        phone: data.user.phone,
+        role: data.user.id_role,
+        address: data.user.address
+      });
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error);
+      setIsLoading(false);
+    }
   };
+
+  useEffect(() => {
+    getUser();
+  }, []);
 
   window.showLoading = (status) => {
     setIsSpinning(status);
@@ -23,7 +40,8 @@ const MainContextProvider = ({ children }) => {
   return (
     <MainContext.Provider
       value={{
-        showModal
+        user,
+        setUser
       }}
     >
       {isLoading ? (
@@ -41,10 +59,6 @@ const MainContextProvider = ({ children }) => {
       ) : (
         <div style={{ maxWidth: '2000px', margin: '0 auto' }}>
           {isSpinning && <Spin />}
-          <LoginModal
-            isModalOpen={isModalOpen}
-            setIsModalOpen={setIsModalOpen}
-          />
           {children}
         </div>
       )}
