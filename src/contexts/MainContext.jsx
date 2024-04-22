@@ -1,4 +1,5 @@
 import { useEffect, useState, createContext, useContext } from 'react';
+import { notification } from 'antd';
 import Spin from '../components/common/spin';
 // import { ROLES } from '../constants/roles';
 import useAxios from '../hooks/useAxios';
@@ -7,14 +8,23 @@ export const MainContext = createContext({});
 
 const MainContextProvider = ({ children }) => {
   const [user, setUser] = useState();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [isSpinning, setIsSpinning] = useState(false);
-  const { api }  = useAxios();
+  const [api, contextHolder] = notification.useNotification();
+  const { api: axiosApi }  = useAxios();
+
+  window.openNoti = (message, description) => {
+    api.info({
+      message,
+      description,
+      placement: 'topRight',
+    });
+  };
+
 
   const getUser = async () => {
-    setIsLoading(true);
     try {
-      const { data } = await api.get("/me");
+      const { data } = await axiosApi.get("/me");
       setUser({
         email: data.user.email,
         name: data.user.full_name,
@@ -24,7 +34,6 @@ const MainContextProvider = ({ children }) => {
       });
       setIsLoading(false);
     } catch (error) {
-      console.log(error);
       setIsLoading(false);
     }
   };
@@ -59,6 +68,7 @@ const MainContextProvider = ({ children }) => {
       ) : (
         <div style={{ maxWidth: '2000px', margin: '0 auto' }}>
           {isSpinning && <Spin />}
+          {contextHolder}
           {children}
         </div>
       )}

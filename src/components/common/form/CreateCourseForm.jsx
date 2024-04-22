@@ -56,30 +56,7 @@ const CreateCourseForm = () => {
           ]}
         />
       </Form.Item>
-      <Form.Item
-        label="Course instructor"
-        name="type"
-        rules={[
-          {
-            required: true,
-          },
-        ]}
-      >
-        <Select
-          // defaultValue="lucy"
-          // onChange={handleChange}
-          options={[
-            {
-              value: 0,
-              label: "Alan",
-            },
-            {
-              value: 1,
-              label: "Henry",
-            },
-          ]}
-        />
-      </Form.Item>
+      
       
       <Form.Item
         label="Course Image"
@@ -117,18 +94,6 @@ const CreateCourseForm = () => {
         <ReactQuill theme="snow" modules={modules} />
       </Form.Item>
 
-      <Form.Item label="Resources & Attachments" name="resource">
-        <Upload
-          name="file"
-          // action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
-          // listType="picture"
-          beforeUpload={() => false}
-          onChange={(info) => console.log(info.file, "info")}
-          style={{ borderColor: "" }}
-        >
-          <Button icon={<UploadOutlined />}>Upload</Button>
-        </Upload>
-      </Form.Item>
       <Form.Item style={{ display: "flex", justifyContent: "flex-end" }}>
         <Button htmlType="submit" type="primary">
           Create

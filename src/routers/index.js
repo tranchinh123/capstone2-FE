@@ -108,5 +108,13 @@ export const routers = [
     component: 'schedule',
     noHeader: true,
     allow: ['learner', 'teacher']
+  },
+  {
+    exact: true,
+    path: '/users',
+    direct: 'users',
+    component: 'users',
+    noHeader: true,
+    allow: ['learner', 'teacher']
   }
 ];
