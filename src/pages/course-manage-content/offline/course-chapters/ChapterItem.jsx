@@ -2,23 +2,56 @@ import { List, Popconfirm, Button, Dropdown } from 'antd';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { MdDragIndicator, MdEdit, MdDelete } from 'react-icons/md';
+import useAxios from '../../../../hooks/useAxios';
+import { useParams } from 'react-router';
 
-const ChapterItem = ({ item, handleShowChapterDetail, handleOpenModal, setData }) => {
+const ChapterItem = ({ item, handleShowChapterDetail, handleOpenModal, data, setData }) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: item.id });
   const style = {
     transform: CSS.Transform.toString(transform),
     transition
   };
+  const { api } = useAxios();
+  const { id } = useParams();
+
+
+  const handleCheckCanDelete = async () => {
+    try {
+      const response = await api.post('/admin/chapter/check-is-destroy', {
+        id_cource: id,
+        id_chapter: item.id,
+      });
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   const confirm = async () => {
     try {
-      // logic cho chapter delete
+      window.showLoading(true);
+      const response1 = await handleCheckCanDelete();
+      if (response1.data.status) {
+        const newData = data.filter(d => {
+          if(d.id !== item.id) {
+            return d;
+          }
+        })
+        const response2 = await api.post('/admin/chapter/update', {
+          id,
+          chapter: JSON.stringify(newData)
+        })
+        if(response2.data.message === 'Successfully update a chapter') setData(newData);
+        window.showLoading(false);
+        window.openNoti('Message', `Delete chapter successfully.`);
+      } else {
+        window.showLoading(false);
+        window.openNoti('Message', 'Can not delete chapter because it contains lesson.');
+      }
     } catch (error) {
-      
+      console.log(error);
     }
-    console.log(item, 'tiem');
-    console.log(e);
   };
 
   const items = [
@@ -38,8 +71,8 @@ const ChapterItem = ({ item, handleShowChapterDetail, handleOpenModal, setData }
         </div>
       ),
     },
-  ];
-
+  ];  
+ 
   return (
     <div key={item.id} ref={setNodeRef} style={style} {...attributes}>
       <List.Item>

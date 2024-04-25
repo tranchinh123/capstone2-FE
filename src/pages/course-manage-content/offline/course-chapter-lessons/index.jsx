@@ -26,7 +26,7 @@ const CourseChapterLessons = ({
         id_cource: +id,
         id_chapter: +selectedChapterId,
       });
-      setData(data.lessons.data);
+      setData(data.lessons);
       window.showLoading(false);
     } catch (error) {
       window.showLoading(false);
@@ -37,14 +37,28 @@ const CourseChapterLessons = ({
     getLessons();
   }, [])
 
-  const handleDragEnd = (event) => {
+  const handleDragEnd = async (event) => {
     const { active, over } = event;
     if (active.id !== over.id) {
-      setData((data) => {
+      try {
         const activeIndex = data.map((d) => d.id).indexOf(active.id);
         const overIndex = data.map((d) => d.id).indexOf(over.id);
-        return arrayMove(data, activeIndex, overIndex);
-      });
+        console.log(arrayMove(data, activeIndex, overIndex));
+        setData(arrayMove(data, activeIndex, overIndex));
+        await api.post('/admin/lesson/change-position', {
+          id_cource: +id,
+          id_chapter: +selectedChapterId,
+          id_previous: active.id,
+          id_next: over.id
+        })
+        // setData((data) => {
+        //   const activeIndex = data.map((d) => d.id).indexOf(active.id);
+        //   const overIndex = data.map((d) => d.id).indexOf(over.id);
+        //   return arrayMove(data, activeIndex, overIndex);
+        // });
+      } catch (error) {
+        console.log(error, 'error');
+      }
     }
   };
 
@@ -81,17 +95,16 @@ const CourseChapterLessons = ({
           getLessons={getLessons}
         />
      )}
-       {data && (
-         <DragDropList
-          handleDragEnd={handleDragEnd}
-          data={data}
-          handleOpenModal={handleOpenModal}
-          handleShowDetail={handleOpenModal}
-          buttonText="New lesson"
-          title="Lesson"
-          Item={LessonItem}
-        />
-       )}
+      <DragDropList
+        handleDragEnd={handleDragEnd}
+        data={data}
+        setData={setData}
+        handleOpenModal={handleOpenModal}
+        handleShowDetail={handleOpenModal}
+        buttonText="New lesson"
+        title="Lesson"
+        Item={LessonItem}
+      />
     </>
   );
 };

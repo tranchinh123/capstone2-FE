@@ -63,6 +63,7 @@ const DragDropList = ({
              renderItem={(item) => (
                <Item
                  key={item.id}
+                 data={data}
                  item={item}
                  handleShowVideoDetail={handleShowDetail}
                  handleShowChapterDetail={handleShowDetail}

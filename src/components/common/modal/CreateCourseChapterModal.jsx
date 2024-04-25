@@ -45,7 +45,7 @@ const CreateCourseChapterModal = ({ isModalOpen, setIsModalOpen, editMode, selec
         id,
         chapter: JSON.stringify(newData)
       })
-      if(data.message === 'Successfully added a new cource') setData(newData);
+      if(data.message === 'Successfully added a new chapter') setData(newData);
       window.showLoading(false);
       window.openNoti('Message', `Create new chapter successfully.`);
       setIsModalOpen(false);

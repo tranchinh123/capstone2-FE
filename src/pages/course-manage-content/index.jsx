@@ -1,15 +1,16 @@
-import { useState, useEffect } from "react";
-import { useParams } from "react-router";
-import OfflineCourseManageContent from "./offline";
-import OnlineCourseManageContent from "./online";
+import { useState, useEffect } from 'react';
+import { useParams } from 'react-router';
+import OfflineCourseManageContent from './offline';
+import OnlineCourseManageContent from './online';
 import useAxios from '../../hooks/useAxios';
 
+
 const CourseManageContentPage = () => {
-    const [data, setData] = useState(undefined);
-    const [courseType, setCourseType] = useState();
-   
+  const [data, setData] = useState(undefined);
+  const [courseType, setCourseType] = useState();
   const { id } = useParams();
   const { api } = useAxios();
+
   useEffect(() => {
     const getCourseDetail = async () => {
         try {
@@ -24,13 +25,11 @@ const CourseManageContentPage = () => {
     }
     getCourseDetail();
   }, [])
-  
+
   return (
     <>
-        {/* {(courseType === 0 && data !== undefined) && <OnlineCourseManageContent data={data} setData={setData} />}
-      {(courseType === 1 && data !== undefined) && <OfflineCourseManageContent data={data} setData={setData} />} */}
-      <OnlineCourseManageContent />
-      
+      {(courseType === 0 && data !== undefined) && <OnlineCourseManageContent data={data} setData={setData} />}
+      {(courseType === 1 && data !== undefined) && <OfflineCourseManageContent data={data} setData={setData} />}
     </>
   );
 };
