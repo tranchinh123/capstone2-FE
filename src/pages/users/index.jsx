@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Table, Tag, Dropdown, Button, Popconfirm } from 'antd';
+import { Table, Tag, Dropdown, Button, Popconfirm, Input, Select } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { BsThreeDots } from 'react-icons/bs';
 import { useEffect } from 'react';
@@ -7,7 +7,7 @@ import useAxios from '../../hooks/useAxios';
 import CreateUserModal from './create-user';
 import { useAppContext } from '../../contexts/MainContext';
 import NotAllow from '../../components/common/not-allow';
-
+const { Search } = Input;
 
 const ManageUsersPage = () => {
   const [users, setUsers] = useState([]);
@@ -15,6 +15,8 @@ const ManageUsersPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
   const [isOpen, setIsOpen] = useState(false);
+  const [searchEmail, setSearchEmail] = useState(null);
+  const [searchStatus, setSearchStatus] = useState(null);
   const { api } = useAxios();
   const { user: appUser } = useAppContext();
 
@@ -25,7 +27,10 @@ const ManageUsersPage = () => {
   const getUsers = async (page) => {
     window.showLoading(true);
     try {
-      const { data } = await api.post(`/admin/user/get-data?page=${page}`);
+      const { data } = await api.post(`/admin/user/get-data?page=${page}`, {
+        email: searchEmail,
+        is_block: searchStatus
+      });
       const editedData = data.users.data.map(d => {
         return {...d, key: d.id};
       });
@@ -35,7 +40,11 @@ const ManageUsersPage = () => {
       window.showLoading(false);
     } catch (error) {
       window.showLoading(false);
-      console.log(error, 'error');
+      if(error.response.data.error === 'There are no accounts in the system!') {
+        setUsers([]);
+        setCurrentPage(1);
+        setLastPage(1);
+      }
     }
   }
 
@@ -191,6 +200,10 @@ const ManageUsersPage = () => {
     getUsers(currentPage);
   }, [currentPage]);
 
+  useEffect(() => {
+    getUsers(1);
+  }, [searchStatus])
+
   return (
     <>
       {
@@ -200,10 +213,36 @@ const ManageUsersPage = () => {
             <div
               style={{
                 display: 'flex',
-                justifyContent: 'flex-end',
+                justifyContent: 'space-between',
                 marginBottom: '20px'
               }}
             >
+                <div style={{ display: 'flex', gap: '10px' }}>
+                  <Search
+                    placeholder="Search by email"
+                    enterButton="Search"
+                    size="middle"
+                    onChange={e => setSearchEmail(e.target.value)}
+                    onSearch={() => getUsers(1)}
+                  />
+                  <Select
+                    placeholder={'Status'}
+                    style={{
+                      width: 120,
+                    }}
+                    onChange={value => setSearchStatus(value)}
+                    options={[
+                      {
+                        value: 0,
+                        label: 'active',
+                      },
+                      {
+                        value: 1,
+                        label: 'unactive',
+                      },
+                    ]}
+                  />
+                </div>
                 <Button
                   type="primary"
                   icon={<PlusOutlined />}

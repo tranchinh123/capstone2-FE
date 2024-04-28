@@ -29,9 +29,9 @@ const QuestionPage = () => {
 
     const columns = [
         {
-            title: 'Question content',
-            dataIndex: 'content',
-            key: 'content'
+            title: 'Question name',
+            dataIndex: 'name',
+            key: 'name'
         },
         {
             title: 'Type',
@@ -90,25 +90,11 @@ const QuestionPage = () => {
     const data = [
         {
             key: '1',
-            content: 'John Brown',
-            type: '$32',
-            mark: 'New York No. 1 Lake Park',
-            difficulty: '',
-            status: ['cool', 'teacher']
-        },
-        {
-            key: '2',
-            title: 'Jim Green',
-            price: '$42',
-            address: 'London No. 1 Lake Park',
-            status: ['loser']
-        },
-        {
-            key: '3',
-            title: 'Joe Black',
-            price: '$32',
-            address: 'Sydney No. 1 Lake Park',
-            status: ['cool', 'teacher']
+            name: 'React basic',
+            type: 'Multiple choice',
+            mark: '4',
+            difficulty: 'Hard',
+            status: ['active']
         }
     ];
 

@@ -12,7 +12,7 @@ import styles from './styles.module.scss';
 const CreateCourseForm = ({ propCourse }) => {
   const [name, setName] = useState(propCourse?.cource_name);
   const [type, setType] = useState(propCourse?.cource_type);
-  const [image, setImage] = useState(propCourse?.cource_image ? [{ url: propCourse?.cource_image }] : null);
+  const [image, setImage] = useState(propCourse?.cource_image ? [{ name: propCourse?.cource_image, url: propCourse?.cource_image }] : null);
   const [introduction, setIntroduction] = useState(propCourse?.cource_introduce);
   const [description, setDescription] = useState(propCourse?.cource_description);
 

@@ -149,11 +149,11 @@ const CreateChapterLessonModal = ({ isModalOpen, setIsModalOpen, editMode, selec
               options={[
                 {
                   value: '1',
-                  label: 'Not Identified'
+                  label: 'Exercise 1'
                 },
                 {
                   value: '2',
-                  label: 'Closed'
+                  label: 'Exercise 2'
                 }
               ]}
             />
