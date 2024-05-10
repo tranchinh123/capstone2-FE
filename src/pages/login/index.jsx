@@ -50,7 +50,7 @@ const LoginPage = () => {
               <Input value={email} onChange={(e) => setEmail(e.target.value)} />
             </Form.Item>
             <Form.Item label="Password" name="password">
-              <Input
+              <Input.Password
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />

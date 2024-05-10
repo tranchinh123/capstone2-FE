@@ -6,8 +6,8 @@ import {
   DatePicker,
   TimePicker,
   Select,
-  Tabs,
   Input,
+  Tooltip,
 } from "antd";
 import SheduleModal from "../../../../components/common/modal/SheduleModal";
 import { GenerateSchedules } from "../../../../constants/GenerateSchedules";
@@ -15,6 +15,7 @@ import { DateInWeek } from "../../../../constants/DateInWeek";
 import { randomID } from "../../../../constants/GenerateRandomID";
 import { useParams, useNavigate } from "react-router";
 import useAxios from "../../../../hooks/useAxios";
+import { CiWarning } from "react-icons/ci";
 import dayjs from "dayjs";
 
 const options = [
@@ -49,10 +50,10 @@ const options = [
 ];
 
 let initial_duration;
+let initial_weekday;
 const ClassDetailPage = () => {
   const [form] = Form.useForm();
   const { RangePicker } = DatePicker;
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [users, setUsers] = useState([]);
   const [courseInfo, setCourseInfo] = useState({
     class_name: "",
@@ -68,7 +69,7 @@ const ClassDetailPage = () => {
   const { id, classId } = useParams();
   const navigate = useNavigate();
 
-  const handleGetUsers = async () => {
+  const handleGetCourseInfo = async () => {
     try {
       window.showLoading(true);
       const { data } = await api.get(`/admin/class/get-data/${classId}`);
@@ -86,6 +87,7 @@ const ClassDetailPage = () => {
         weekday_selection: JSON.parse(data.class.weekday_selection),
       };
       initial_duration = JSON.parse(data.class.duration);
+      initial_weekday = JSON.parse(data.class.weekday_selection);
       setCourseInfo(newData);
       window.showLoading(false);
     } catch (error) {
@@ -97,7 +99,6 @@ const ClassDetailPage = () => {
   const getUsers = async () => {
     try {
       const { data } = await api.get("/admin/list-user");
-      console.log(data, "data");
       setUsers(
         data.users.map((u) => {
           return { label: u.email, value: u.id };
@@ -114,7 +115,7 @@ const ClassDetailPage = () => {
 
   useEffect(() => {
     if (classId) {
-      handleGetUsers();
+      handleGetCourseInfo();
     }
   }, []);
 
@@ -122,75 +123,109 @@ const ClassDetailPage = () => {
   const formattedDate = currentDate.toISOString().slice(0, 10);
 
   const onFinish = async () => {
+    let status;
+    const hasChangeOnWeekday =
+      JSON.stringify(initial_weekday) ===
+      JSON.stringify(courseInfo.weekday_selection);
+    console.log(hasChangeOnWeekday, "has");
+
+    if (courseInfo.students.includes(courseInfo.teacher)) {
+      window.openNoti(
+        "Message",
+        "Can not set a user is both a teacher and a student."
+      );
+      return;
+    }
+
     if (
       initial_duration[0] !== courseInfo.duration[0] ||
       initial_duration[1] !== courseInfo.duration[1]
     ) {
-      console.log("haschange");
+      status = "haschange";
     } else {
-      console.log("noChange");
+      status = "noChange";
     }
-    // window.showLoading(true);
+    if (classId) {
+      onUpdate(status);
+      return;
+    }
 
-    // let schedules = GenerateSchedules(
-    //   courseInfo.duration[0],
-    //   courseInfo.duration[1],
-    //   courseInfo.weekday_selection.map((d) => DateInWeek[d])
-    // ).map((s, idx) => {
-    //   return {
-    //     title: `Lesson ${idx + 1}`,
-    //     date: s,
-    //     time: `${courseInfo.time[0]}-${courseInfo.time[1]}`
-    //   };
-    // });
-    // const bodyObj = { ...courseInfo, room_id: randomID(5), schedules };
-    // try {
-    //   const { data } = await api.post('/admin/class/create', {
-    //     duration: JSON.stringify(bodyObj.duration),
-    //     time: JSON.stringify(bodyObj.time),
-    //     weekday_selection: JSON.stringify(bodyObj.weekday_selection),
-    //     class_name: bodyObj.class_name,
-    //     room_id: bodyObj.room_id,
-    //     schedules:  JSON.stringify(schedules),
-    //     id_cource: id,
-    //     teacher: bodyObj.teacher,
-    //     students: JSON.stringify(bodyObj.students),
-    //   });
-    //   if(data.message === 'Successfully added a new class') {
-    //     window.openNoti('Message', 'Successfully added a new class');
-    //     // navigate(`/course-manage-content/${id}`)
-    //   }
-    //   window.showLoading(false);
-    // } catch (error) {
-    //   window.openNoti('Message', 'Failed to add a new class');
-    //   window.showLoading(false);
-    // }
+    window.showLoading(true);
+    let schedules = GenerateSchedules(
+      courseInfo.duration[0],
+      courseInfo.duration[1],
+      courseInfo.weekday_selection.map((d) => DateInWeek[d])
+    ).map((s, idx) => {
+      return {
+        title: `Lesson ${idx + 1}`,
+        date: s,
+      };
+    });
+    const bodyObj = { ...courseInfo, room_id: randomID(5), schedules };
+    try {
+      const { data } = await api.post("/admin/class/create", {
+        duration: JSON.stringify(bodyObj.duration),
+        time: JSON.stringify(bodyObj.time),
+        weekday_selection: JSON.stringify(bodyObj.weekday_selection),
+        class_name: bodyObj.class_name,
+        room_id: bodyObj.room_id,
+        schedules: JSON.stringify(schedules),
+        id_cource: id,
+        teacher: bodyObj.teacher,
+        students: JSON.stringify(bodyObj.students),
+      });
+      if (data.message === "Successfully added a new class") {
+        window.openNoti("Message", "Successfully added a new class");
+        navigate(`/course-manage-content/${id}`);
+      }
+      window.showLoading(false);
+    } catch (error) {
+      window.openNoti("Message", "Failed to add a new class");
+      window.showLoading(false);
+    }
+    setCourseInfo({ ...courseInfo, room_id: randomID(5), schedules });
+  };
 
-    // setCourseInfo({ ...courseInfo, room_id: randomID(5), schedules });
+  const onUpdate = async (status) => {
+    let schedules = courseInfo.schedules;
+    if (status === "haschange") {
+      schedules = GenerateSchedules(
+        courseInfo.duration[0],
+        courseInfo.duration[1],
+        courseInfo.weekday_selection.map((d) => DateInWeek[d])
+      ).map((s, idx) => {
+        return {
+          title: `Lesson ${idx + 1}`,
+          date: s,
+        };
+      });
+    }
+
+    const bodyObj = { ...courseInfo, schedules };
+    try {
+      await api.post("/admin/class/update", {
+        id: classId,
+        duration: JSON.stringify(bodyObj.duration),
+        time: JSON.stringify(bodyObj.time),
+        weekday_selection: JSON.stringify(bodyObj.weekday_selection),
+        class_name: bodyObj.class_name,
+        room_id: bodyObj.room_id,
+        id_cource: id,
+        teacher: bodyObj.teacher,
+        students: JSON.stringify(bodyObj.students),
+        schedules: JSON.stringify(bodyObj.schedules),
+        updated_duration: status === "haschange" ? 1 : 0,
+      });
+      handleGetCourseInfo();
+      window.openNoti("Message", "Update course successfully.");
+    } catch (error) {
+      window.openNoti("Message", "Failed to update course.");
+    }
   };
 
   const handleFormInputChange = (type, value) => {
     setCourseInfo({ ...courseInfo, [type]: value });
   };
-
-  const items = [
-    {
-      key: "1",
-      label: "Tab 1",
-      children: (
-        <SheduleModal
-          isModalOpen={isModalOpen}
-          setIsModalOpen={setIsModalOpen}
-          schedules={courseInfo.schedules}
-        />
-      ),
-    },
-    {
-      key: "2",
-      label: "Tab 2",
-      children: "Content of Tab Pane 2",
-    },
-  ];
 
   return (
     <>
@@ -231,7 +266,16 @@ const ClassDetailPage = () => {
             />
           </Form.Item>
           <Form.Item
-            label="Course duration"
+            label={
+              <div style={{ display: "flex", gap: "5px" }}>
+                <span>Course duration</span>
+                {classId && (
+                  <Tooltip title="Edit duration can change schedules and cause information to be lost">
+                    <CiWarning />
+                  </Tooltip>
+                )}
+              </div>
+            }
             name="duration"
             rules={[{ required: true }]}
             initialValue={[
@@ -267,7 +311,16 @@ const ClassDetailPage = () => {
           </Form.Item>
 
           <Form.Item
-            label="Weekday selection"
+            label={
+              <div style={{ display: "flex", gap: "5px" }}>
+                <span>Weekday selection</span>
+                {classId && (
+                  <Tooltip title="Edit weekday selection can change schedules and cause information to be lost">
+                    <CiWarning />
+                  </Tooltip>
+                )}
+              </div>
+            }
             name="weekday_selection"
             rules={[{ required: true }]}
             initialValue={courseInfo.weekday_selection}
@@ -335,9 +388,9 @@ const ClassDetailPage = () => {
 
           {/* <Tabs defaultActiveKey="1" items={items} /> */}
           <SheduleModal
-            isModalOpen={isModalOpen}
-            setIsModalOpen={setIsModalOpen}
             schedules={courseInfo.schedules}
+            handleGetCourseInfo={handleGetCourseInfo}
+            courseInfo={courseInfo}
           />
         </Form>
       )}

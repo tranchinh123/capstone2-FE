@@ -1,92 +1,117 @@
-import { useEffect, useState } from 'react';
-import { Button, Transfer, Modal } from 'antd';
+import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
+import { Button, Form, Input, Space, Modal, Select } from "antd";
 
 const CreateExcerciseModal = ({ isModalOpen, setIsModalOpen }) => {
-    const [mockData, setMockData] = useState([]);
-    const [targetKeys, setTargetKeys] = useState([]);
-    const getMock = () => {
-        const tempTargetKeys = [];
-        const tempMockData = [];
-        for (let i = 0; i < 20; i++) {
-            const data = {
-                key: i.toString(),
-                title: `content${i + 1}`,
-                description: `description of content${i + 1}`,
-                chosen: i % 2 === 0
-            };
-            if (data.chosen) {
-                tempTargetKeys.push(data.key);
-            }
-            tempMockData.push(data);
-        }
-        setMockData(tempMockData);
-        setTargetKeys(tempTargetKeys);
-    };
-    useEffect(() => {
-        getMock();
-    }, []);
-    const handleChange = (newTargetKeys) => {
-        setTargetKeys(newTargetKeys);
-    };
+  const onFinish = (values) => {
+    const marks = values.excercise.map((val) => val.mark);
+  };
 
-    const getMoreData = () => {
-        const tempMockData = [];
-        for (let i = 0; i < 10; i++) {
-            const data = {
-                key: i.toString(),
-                title: `content${i + 1 + 100}`,
-                description: `description of content${i + 1 + 100}`,
-                chosen: false
-            };
-            tempMockData.push(data);
-        }
-        console.log(tempMockData, 'tempMockData');
-        setMockData([...mockData, ...tempMockData]);
-    };
-
-    return (
-        <Modal
-            title="Create excercise"
-            open={isModalOpen}
-            onCancel={() => setIsModalOpen(false)}
-            footer={() => <></>}
-            style={{ margin: '0 auto' }}
-            width="640px"
+  return (
+    <Modal
+      title="Create excercise"
+      open={isModalOpen}
+      onCancel={() => setIsModalOpen(false)}
+      footer={() => <></>}
+      style={{ margin: "0 auto" }}
+      width="640px"
+    >
+      <Form
+        name="dynamic_form_nest_item"
+        onFinish={onFinish}
+        style={{
+          maxWidth: 600,
+          maxHeight: 500,
+          overflowY: "scroll",
+        }}
+        autoComplete="off"
+      >
+        <Form.List name="excercise">
+          {(fields, { add, remove }) => (
+            <>
+              {fields.map(({ key, name, ...restField }) => (
+                <Space
+                  key={key}
+                  style={{
+                    display: "flex",
+                    marginBottom: 8,
+                  }}
+                  align="baseline"
+                >
+                  <Form.Item
+                    {...restField}
+                    name={[name, "question"]}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please select question",
+                      },
+                    ]}
+                  >
+                    <Select
+                      style={{ width: 350 }}
+                      options={[
+                        {
+                          value: "jack",
+                          label: "Jack",
+                        },
+                      ]}
+                      placeholder="Question"
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    {...restField}
+                    name={[name, "mark"]}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please enter question mark",
+                      },
+                      () => ({
+                        validator(_, value) {
+                          if (isNaN(value) || Number(value) <= 0) {
+                            return Promise.reject(
+                              new Error(
+                                "Mark must be an positive number and greater than 0"
+                              )
+                            );
+                          }
+                          return Promise.resolve();
+                        },
+                      }),
+                    ]}
+                  >
+                    <Input placeholder="Mark" />
+                  </Form.Item>
+                  <MinusCircleOutlined onClick={() => remove(name)} />
+                </Space>
+              ))}
+              <Form.Item style={{ paddingRight: "20px" }}>
+                <Button
+                  type="dashed"
+                  onClick={() => add()}
+                  block
+                  icon={<PlusOutlined />}
+                >
+                  Add question
+                </Button>
+              </Form.Item>
+            </>
+          )}
+        </Form.List>
+        <Form.Item
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            margin: "10px",
+          }}
         >
-            <Transfer
-                dataSource={mockData}
-                showSearch
-                listStyle={{
-                    width: 250,
-                    height: 350
-                }}
-                operations={['to right', 'to left']}
-                targetKeys={targetKeys}
-                onChange={handleChange}
-                render={(item) => `${item.title}-${item.description}`}
-                onScroll={(direction, e) => {
-                    const container = e.target;
-                    if (
-                        container.scrollHeight - container.scrollTop ===
-                        container.clientHeight &&
-                        direction === 'left'
-                    ) {
-                        console.log('end');
-                        getMoreData();
-                    }
-                }}
-            />
-            <div
-                style={{
-                    display: 'flex',
-                    justifyContent: 'flex-end',
-                    marginTop: '20px'
-                }}
-            >
-                <Button type="primary">Create</Button>
-            </div>
-        </Modal>
-    );
+          <Button type="primary" htmlType="submit">
+            Create
+          </Button>
+        </Form.Item>
+      </Form>
+    </Modal>
+  );
 };
 
 export default CreateExcerciseModal;

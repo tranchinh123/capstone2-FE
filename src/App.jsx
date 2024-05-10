@@ -18,6 +18,12 @@ import EditQuestion from "./pages/question/edit";
 import SchedulePage from "./pages/schedule";
 import ManageUsersPage from "./pages/users";
 import ClassDetailPage from "./pages/course-manage-content/online/class-detail";
+import DoingExcercisePage from "./pages/excercise/do";
+import ClassesPage from "./pages/classes";
+import ClassTeachingDetailPage from "./pages/classes/teaching/students";
+import StudentExcercisesPage from "./pages/classes/teaching/student-excercises";
+import StudentExcerciseMarking from "./pages/classes/teaching/student-excercise-marking";
+import ClassExcercisePage from "./pages/classes/learning/excercises";
 import NotFoundPage from "./pages/404";
 
 const App = () => {
@@ -106,6 +112,7 @@ const App = () => {
               </AppLayout>
             }
           />
+          <Route path="/excercise/do/:id" element={<DoingExcercisePage />} />
           <Route
             path="/course-learning/online/:id"
             element={
@@ -155,6 +162,46 @@ const App = () => {
             element={
               <AppLayout>
                 <ManageUsersPage />
+              </AppLayout>
+            }
+          />
+          <Route
+            path="/classes"
+            element={
+              <AppLayout>
+                <ClassesPage />
+              </AppLayout>
+            }
+          />
+          <Route
+            path="/classes/:id/students"
+            element={
+              <AppLayout>
+                <ClassTeachingDetailPage />
+              </AppLayout>
+            }
+          />
+          <Route
+            path="/classes/:id/students/:studentId/excercies"
+            element={
+              <AppLayout>
+                <StudentExcercisesPage />
+              </AppLayout>
+            }
+          />
+          <Route
+            path="/classes/:id/students/:studentId/excercies/:excerciseId/marking"
+            element={
+              <AppLayout>
+                <StudentExcerciseMarking />
+              </AppLayout>
+            }
+          />
+          <Route
+            path="/classes/:id/excercises"
+            element={
+              <AppLayout>
+                <ClassExcercisePage />
               </AppLayout>
             }
           />

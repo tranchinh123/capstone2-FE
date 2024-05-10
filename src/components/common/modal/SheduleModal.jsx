@@ -3,11 +3,18 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import EditClassModal from "./EditClassModal";
 
-const SheduleModal = ({ schedules }) => {
+const SheduleModal = ({
+  schedules,
+  handleGetCourseInfo,
+  courseInfo,
+  isFromSchedulePage = false,
+}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedLesson, setSelectedLesson] = useState(null);
 
   const handleEventClick = (eventInfo) => {
-    const event = eventInfo.event;
+    if (isFromSchedulePage) return;
+    setSelectedLesson(eventInfo.event);
     setIsModalOpen(true);
   };
 
@@ -21,10 +28,13 @@ const SheduleModal = ({ schedules }) => {
           padding: "5px",
         }}
       >
-        <span>Lesson: {eventInfo.event.title}</span>
-
         <span>
-          Link: <a href="#">asdasasd</a>
+          <span style={{ color: "#61BCFF" }}>Lesson: </span>
+          {eventInfo.event.title}
+        </span>
+        <span>
+          <span style={{ color: "#61BCFF" }}>RoomID: </span>
+          {courseInfo?.room_id}
         </span>
       </div>
     );
@@ -32,11 +42,18 @@ const SheduleModal = ({ schedules }) => {
 
   return (
     <>
-      <EditClassModal
-        isModalOpen={isModalOpen}
-        setIsModalOpen={setIsModalOpen}
-      />
+      {selectedLesson && (
+        <EditClassModal
+          selectedLesson={selectedLesson}
+          isModalOpen={isModalOpen}
+          setIsModalOpen={setIsModalOpen}
+          setSelectedLesson={setSelectedLesson}
+          handleEventClick={handleEventClick}
+          handleGetCourseInfo={handleGetCourseInfo}
+        />
+      )}
       <FullCalendar
+        event
         eventBackgroundColor="#2C3E50"
         height="85vh"
         plugins={[dayGridPlugin]}
@@ -44,6 +61,8 @@ const SheduleModal = ({ schedules }) => {
         events={schedules}
         eventClick={handleEventClick}
         eventContent={eventContent}
+        eventResizableFromStart
+        dayMaxEventRows={3}
       />
     </>
   );
