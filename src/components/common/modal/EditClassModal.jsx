@@ -1,4 +1,4 @@
-import { Button, Form, Input, Modal, Select } from "antd";
+import { Button, Form, Input, Modal } from 'antd';
 import useAxios from "../../../hooks/useAxios";
 
 const EditClassModal = ({
@@ -17,7 +17,6 @@ const EditClassModal = ({
       await api.post("/admin/class-detail/update", {
         id: selectedLesson.id,
         title: values.title,
-        // id_excercise: ''
       });
       window.showLoading(false);
       window.openNoti("Message", "Successfully update lesson");
@@ -59,25 +58,6 @@ const EditClassModal = ({
           initialValue={selectedLesson.title}
         >
           <Input placeholder="Enter lesson title" />
-        </Form.Item>
-        <Form.Item
-          label="Excercise"
-          name="exercise"
-          // rules={[
-          //   {
-          //     required: true
-          //   }
-          // ]}
-        >
-          <Select
-            // onChange={}
-            options={[
-              {
-                value: "jack",
-                label: "Jack",
-              },
-            ]}
-          />
         </Form.Item>
         <Form.Item style={{ display: "flex", justifyContent: "flex-end" }}>
           <Button htmlType="submit" type="primary">

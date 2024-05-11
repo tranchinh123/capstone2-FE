@@ -7,6 +7,7 @@ import dayjs from 'dayjs';
 
 const CreateChapterLessonModal = ({ isModalOpen, setIsModalOpen, editMode, selectedLessonId, selectedChapterId, getLessons }) => {
   const [loading, setLoading] = useState(editMode);
+  const [excerciseOptions, setExcerciseOptions] = useState([]);
   const [dataForEditMode, setDataForEditMode] = useState({
     id: null,
     name: '',
@@ -18,6 +19,23 @@ const CreateChapterLessonModal = ({ isModalOpen, setIsModalOpen, editMode, selec
   const { api } = useAxios();
   const { id } = useParams();
 
+  useEffect(() => {
+    (async () => {
+      try {
+        const { data } = await api.get('/admin/list-excercise');
+        console.log(data.excercises, 'data');
+        setExcerciseOptions(data.excercises.filter(v => v.excercise_type === 1).map(v => {
+          return {
+            value: v.id,
+            label: v.excercise_name
+          }
+        }))
+      } catch (error) {
+        console.log(error);
+      }
+    })()
+  }, []);
+  console.log(excerciseOptions, 'excerciseOptions');
   const handleGetLessonDetail = async () => {
     try {
       const { data } = await api.get(`/admin/lesson/get-data/${selectedLessonId}`);
@@ -27,7 +45,7 @@ const CreateChapterLessonModal = ({ isModalOpen, setIsModalOpen, editMode, selec
         name: data.lesson.lesson_name,
         length: data.lesson.time,
         fileList: [{ name: data.lesson.lesson_video, url: data.lesson.lesson_video }],
-        excercise: '' 
+        excercise: data.lesson.id_excercise
       });
       console.log(data);
       setLoading(false);
@@ -45,7 +63,7 @@ const CreateChapterLessonModal = ({ isModalOpen, setIsModalOpen, editMode, selec
       formData.append('lesson_name', name);
       formData.append('lesson_video', video);
       formData.append('time', time);
-      formData.append('id_excercise', '');
+      formData.append('id_excercise', id_excercise);
       formData.append('id_chapter', selectedChapterId);
       formData.append('id_cource', id);
       await api.post(
@@ -70,9 +88,9 @@ const CreateChapterLessonModal = ({ isModalOpen, setIsModalOpen, editMode, selec
   const onFinish = (values) => {
     if(editMode) {
       const file = dataForEditMode.fileList[0].url || values.resource.file;
-      createNewLesson(values.name, file, String(values.video_length.$d).split(' ')[4]);
+      createNewLesson(values.name, file, String(values.video_length.$d).split(' ')[4], values?.excercise);
     } else {
-      createNewLesson(values.name, values.resource.file, String(values.video_length.$d).split(' ')[4]);
+      createNewLesson(values.name, values.resource.file, String(values.video_length.$d).split(' ')[4], values?.excercise);
     }
   };
 
@@ -82,7 +100,7 @@ const CreateChapterLessonModal = ({ isModalOpen, setIsModalOpen, editMode, selec
     }
   }, []);
   
-
+  console.log(dataForEditMode, 'dataForEditMode.excercise');
   return (
     <Modal
       title={`${editMode ? 'Update' : 'Create'} chapter lesson`}
@@ -135,27 +153,16 @@ const CreateChapterLessonModal = ({ isModalOpen, setIsModalOpen, editMode, selec
           <Form.Item label="Video length" name="video_length" required initialValue={dataForEditMode.length ? dayjs(dataForEditMode.length, 'HH:mm:ss') : null }>
             <TimePicker showNow={false} />
           </Form.Item>
-          <Form.Item label="Excercise" name="resource">
+          <Form.Item label="Excercise" name="excercise" initialValue={dataForEditMode.excercise ? { value: dataForEditMode.excercise } : null}>
             <Select
               showSearch
-              placeholder="Search to Select"
-              // optionFilterProp="children"
+              placeholder="Select excercise"
               filterOption={(input, option) =>
                 (option?.label ?? '')
                   .toLocaleLowerCase()
                   .includes(input.toLocaleLowerCase())
               }
-              // defaultValue={'1'}
-              options={[
-                {
-                  value: '1',
-                  label: 'Exercise 1'
-                },
-                {
-                  value: '2',
-                  label: 'Exercise 2'
-                }
-              ]}
+              options={excerciseOptions}
             />
           </Form.Item>
           <Form.Item style={{ display: 'flex', justifyContent: 'flex-end' }}>

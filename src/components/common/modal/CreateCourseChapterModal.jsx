@@ -37,7 +37,8 @@ const CreateCourseChapterModal = ({ isModalOpen, setIsModalOpen, editMode, selec
       return;
     }
 
-    window.showLoading(true);
+    console.log(values, 'values');
+    console.log(data, 'data');
     const chapter_id = data === null ? 1 : Math.max(...data.map(d => d.id)) + 1;
     const newData = data === null ? [{ id: chapter_id, name: values.name }] : [{ id: chapter_id, name: values.name }, ...data]; 
     try {

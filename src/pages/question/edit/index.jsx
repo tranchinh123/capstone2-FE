@@ -1,4 +1,3 @@
-import React from 'react';
 import EditAndCreateQuestion from '../EditAndCreateQuestion';
 
 const EditQuestion = () => {

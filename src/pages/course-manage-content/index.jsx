@@ -33,7 +33,7 @@ const CourseManageContentPage = () => {
       {courseType === 0 && data !== undefined && (
         <OnlineCourseManageContent data={data} setData={setData} />
       )}
-      {courseType === 1 && data !== undefined && <OfflineCourseManageContent />}
+       {(courseType === 1 && data !== undefined) && <OfflineCourseManageContent data={data} setData={setData} />}
     </>
   );
 };

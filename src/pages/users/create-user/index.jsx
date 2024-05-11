@@ -13,12 +13,13 @@ const CreateUserModal = ({ isModalOpen, setIsModalOpen, getUsers }) => {
   const createUser = async () => {
     window.showLoading(true);
     try {
-       await api.post('/admin/user/create', {
+      const { data } = await api.post('/admin/user/create', {
          email,
          full_name: name,
          address,
          phone
        })
+       console.log(data, 'data');
        getUsers();
        setIsModalOpen(false);
        window.showLoading(false);
@@ -57,6 +58,10 @@ const CreateUserModal = ({ isModalOpen, setIsModalOpen, getUsers }) => {
               rules={[
                 {
                   required: true
+                },
+                {
+                  min: 5,
+                  message: 'Full name should be at least 5 characters'
                 }
               ]}
             >

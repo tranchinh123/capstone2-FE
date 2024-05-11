@@ -71,7 +71,7 @@ const AdminCoursePage = () => {
       dataIndex: 'is_block',
       render: (_, { is_block }) => {
         let color = is_block === 1 ? 'cyan' : 'green';
-        let text = is_block === 1 ? 'PUBLIC' : 'UNPUBLIC';
+        let text = is_block === 1 ? 'UNPUBLIC' : 'PUBLIC';
         return (
           <Tag color={color}>
             {text}

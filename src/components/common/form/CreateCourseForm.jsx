@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button, Form, Input, Upload, Select } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
@@ -11,7 +11,7 @@ import styles from './styles.module.scss';
 
 const CreateCourseForm = ({ propCourse }) => {
   const [name, setName] = useState(propCourse?.cource_name);
-  const [type, setType] = useState(propCourse?.cource_type);
+  const [type, setType] = useState(propCourse?.cource_type || 0);
   const [image, setImage] = useState(propCourse?.cource_image ? [{ name: propCourse?.cource_image, url: propCourse?.cource_image }] : null);
   const [introduction, setIntroduction] = useState(propCourse?.cource_introduce);
   const [description, setDescription] = useState(propCourse?.cource_description);
@@ -20,8 +20,21 @@ const CreateCourseForm = ({ propCourse }) => {
   const { api } = useAxios();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    (async () => {
+      try {
+        const { data } = await api.get('/admin/list-excercise');
+        console.log(data, 'data'); 
+        console.log(type, 'tyoe');
+      } catch (error) {
+        console.log(error);
+      }
+    })()
+  }, []);
+
   const onFinish = async () => {
     try {
+      window.showLoading(true);
       const courseImage = image[0].url || image[0].originFileObj
       const formData = new FormData();
       formData.append('cource_name', name);
@@ -41,8 +54,10 @@ const CreateCourseForm = ({ propCourse }) => {
       );
       navigate('/courses');
       window.openNoti('Message', `${propCourse ? 'Update' : 'Create'} new course succesfully.`)
+      window.showLoading(false);
     } catch (error) {
       window.openNoti('Message', `Failed to ${propCourse ? 'update' : 'create'} new course.`)
+      window.showLoading(false);
     }
   };
 
@@ -73,7 +88,7 @@ const CreateCourseForm = ({ propCourse }) => {
             required: true
           }
         ]}
-        initialValue={propCourse?.cource_type}
+        initialValue={type}
       >
         <Select
           // defaultValue="lucy"
@@ -115,6 +130,29 @@ const CreateCourseForm = ({ propCourse }) => {
           <Button icon={<UploadOutlined />}>Upload</Button>
         </Upload>
       </Form.Item>
+      
+      {type === 1 && (
+        <Form.Item
+          label="Final excercise"
+          name="final_excercise"
+          // initialValue={propCourse?.cource_introduce}
+        >
+          <Select
+            showSearch
+            onChange={value => setType(value)}
+            options={[
+              {
+                value: 0,
+                label: 'Online'
+              },
+              {
+                value: 1,
+                label: 'Offline'
+              }
+            ]}
+          />
+        </Form.Item>
+      )}
 
       <Form.Item
         label="Course introduction"

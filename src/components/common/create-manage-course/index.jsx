@@ -27,10 +27,17 @@ const CreateAndManageCourse = ({ propCourse, handleGetCourseInfo }) => {
 
   const handleChangeStatus = async () => {
     try {
+      window.showLoading(false);
       await api.get(`/admin/cource/update-status/${propCourse.id}`);
       handleGetCourseInfo()
       window.openNoti('Message', `Update code's status successfully.`);
+      window.showLoading(false);
     } catch (error) {
+      window.showLoading(false);
+      if(error.response.data.error === 'The course does not have a final exercise') {
+        window.openNoti('Message', 'Please select final excercise before publish the course');
+        return;
+      }
       window.openNoti('Message', `Failed to update code's status.`);
     }
   }

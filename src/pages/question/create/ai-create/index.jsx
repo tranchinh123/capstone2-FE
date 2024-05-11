@@ -70,11 +70,11 @@ const AICreate = ({ open, setOpen, handleAIQuestionCreate }) => {
       const aiReponse = completion.choices[0].message.content;
       setOpen(false);
       window.showLoading(false);
-      window.openNoti("Message", "Create question successfully.");
+      window.openNoti('Message', 'Generate question successfully.')
       handleAIQuestionCreate(JSON.parse(aiReponse));
     } catch (error) {
       window.showLoading(false);
-      window.openNoti("Message", "Failed to create question.");
+      window.openNoti('Message', 'Failed to generate question.')
     }
   };
 

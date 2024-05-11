@@ -18,6 +18,18 @@ import useAxios from "../../../../hooks/useAxios";
 import { CiWarning } from "react-icons/ci";
 import dayjs from "dayjs";
 
+function arraysAreEqual(arr1, arr2) {
+  if (arr1.length !== arr2.length) {
+      return false;
+  }
+  for (let i = 0; i < arr1.length; i++) {
+      if (arr1[i] !== arr2[i]) {
+          return false; 
+      }
+  }
+  return true; 
+}
+
 const options = [
   {
     label: "Monday",
@@ -55,6 +67,7 @@ const ClassDetailPage = () => {
   const [form] = Form.useForm();
   const { RangePicker } = DatePicker;
   const [users, setUsers] = useState([]);
+  const [excercises, setExercises] = useState([]);
   const [courseInfo, setCourseInfo] = useState({
     class_name: "",
     duration: [],
@@ -64,6 +77,7 @@ const ClassDetailPage = () => {
     schedules: [],
     teacher: "",
     students: [],
+    excercise: []
   });
   const { api } = useAxios();
   const { id, classId } = useParams();
@@ -85,6 +99,7 @@ const ClassDetailPage = () => {
         teacher: data.class.teacher,
         schedules: scheduleData.schedules,
         weekday_selection: JSON.parse(data.class.weekday_selection),
+        excercise: JSON.parse(data.class.id_excercises)
       };
       initial_duration = JSON.parse(data.class.duration);
       initial_weekday = JSON.parse(data.class.weekday_selection);
@@ -109,8 +124,20 @@ const ClassDetailPage = () => {
     }
   };
 
+  const getExcercise = async () => {
+    try {
+      const { data } = await api.get('/admin/list-excercise');
+      setExercises(data.excercises.filter(v => v.excercise_type === 0).map(v => {
+        return { label: v.excercise_name, value: v.id}
+      }));
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   useEffect(() => {
     getUsers();
+    getExcercise();
   }, []);
 
   useEffect(() => {
@@ -123,12 +150,8 @@ const ClassDetailPage = () => {
   const formattedDate = currentDate.toISOString().slice(0, 10);
 
   const onFinish = async () => {
-    let status;
-    const hasChangeOnWeekday =
-      JSON.stringify(initial_weekday) ===
-      JSON.stringify(courseInfo.weekday_selection);
-    console.log(hasChangeOnWeekday, "has");
-
+    let hasChangeDuration;
+    let hasChangeWeekdaySelection;
     if (courseInfo.students.includes(courseInfo.teacher)) {
       window.openNoti(
         "Message",
@@ -137,15 +160,29 @@ const ClassDetailPage = () => {
       return;
     }
 
-    if (
-      initial_duration[0] !== courseInfo.duration[0] ||
-      initial_duration[1] !== courseInfo.duration[1]
-    ) {
-      status = "haschange";
-    } else {
-      status = "noChange";
-    }
     if (classId) {
+      if(initial_duration[0] !== courseInfo.duration[0] || initial_duration[1] !== courseInfo.duration[1]) {
+        hasChangeDuration = true; 
+      } else {
+        hasChangeDuration = false;
+      }
+
+      if(initial_weekday.length !== courseInfo.weekday_selection.length) {
+        hasChangeWeekdaySelection = true;
+      } else {
+        if(arraysAreEqual(initial_weekday, courseInfo.weekday_selection) === true) {
+          hasChangeWeekdaySelection = false;
+        } else {
+          hasChangeWeekdaySelection = true;
+        }
+      }
+
+      let status
+      if(hasChangeDuration || hasChangeWeekdaySelection) {
+        status = true;
+      } else {
+        status = false;
+      }
       onUpdate(status);
       return;
     }
@@ -173,6 +210,7 @@ const ClassDetailPage = () => {
         id_cource: id,
         teacher: bodyObj.teacher,
         students: JSON.stringify(bodyObj.students),
+        id_excercises: JSON.stringify(bodyObj.excercise)
       });
       if (data.message === "Successfully added a new class") {
         window.openNoti("Message", "Successfully added a new class");
@@ -188,7 +226,7 @@ const ClassDetailPage = () => {
 
   const onUpdate = async (status) => {
     let schedules = courseInfo.schedules;
-    if (status === "haschange") {
+    if(status) {
       schedules = GenerateSchedules(
         courseInfo.duration[0],
         courseInfo.duration[1],
@@ -214,7 +252,8 @@ const ClassDetailPage = () => {
         teacher: bodyObj.teacher,
         students: JSON.stringify(bodyObj.students),
         schedules: JSON.stringify(bodyObj.schedules),
-        updated_duration: status === "haschange" ? 1 : 0,
+        id_excercises: JSON.stringify(bodyObj.excercise),
+        changed_schedules: status ? 1 : 0
       });
       handleGetCourseInfo();
       window.openNoti("Message", "Update course successfully.");
@@ -227,6 +266,7 @@ const ClassDetailPage = () => {
     setCourseInfo({ ...courseInfo, [type]: value });
   };
 
+  console.log(courseInfo, 'asdadsads');
   return (
     <>
       <Breadcrumb
@@ -373,6 +413,22 @@ const ClassDetailPage = () => {
               options={users}
             />
           </Form.Item>
+          <Form.Item
+              label="Excercise"
+              name="excercise"
+              initialValue={courseInfo.excercise || null}
+          >
+              <Select
+                mode="multiple"
+                allowClear
+                style={{
+                  width: '100%'
+                }}
+                placeholder="Select excercise"
+                onChange={(val) => handleFormInputChange('excercise', val)}
+                options={excercises}
+              />
+          </Form.Item>
 
           <Form.Item
             style={{
@@ -386,7 +442,6 @@ const ClassDetailPage = () => {
             </Button>
           </Form.Item>
 
-          {/* <Tabs defaultActiveKey="1" items={items} /> */}
           <SheduleModal
             schedules={courseInfo.schedules}
             handleGetCourseInfo={handleGetCourseInfo}
