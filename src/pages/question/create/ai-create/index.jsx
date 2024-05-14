@@ -33,12 +33,12 @@ const AICreate = ({ open, setOpen, handleAIQuestionCreate }) => {
       {
         role: "user",
         content: `
-          I want to create a question about this topic: '${topic}', with these following options:
+          I want to create a question about this topic: "${topic}", with these following options:
           1, The level of difficulty for the question is ${level}.
-          2, it's multiple choice questions with the number of options is ${numbOfQuestions}.
+          2, it's multiple choice questions and the number of options is ${numbOfQuestions}.
           3, Give me response with this JSON format: 
             { 
-              "answers": ['answers number 1', 'answers number2', ...],
+              "answers": [show options in this array],
               "correct_answer": 0 (this is index of correct answer in answers array),
               "question": 'Give the question here',
               "explain": 'Give the explaination why choose the given correct answer'
@@ -70,11 +70,11 @@ const AICreate = ({ open, setOpen, handleAIQuestionCreate }) => {
       const aiReponse = completion.choices[0].message.content;
       setOpen(false);
       window.showLoading(false);
-      window.openNoti("Message", "Create question successfully.");
+      window.openNoti("Message", "Generate question successfully.");
       handleAIQuestionCreate(JSON.parse(aiReponse));
     } catch (error) {
       window.showLoading(false);
-      window.openNoti("Message", "Failed to create question.");
+      window.openNoti("Message", "Failed to generate question.");
     }
   };
 

@@ -1,57 +1,31 @@
-import { useState } from 'react';
-import { BiMoviePlay } from 'react-icons/bi';
-import styles from './styles.module.scss';
+import { useState } from "react";
+import { BiMoviePlay } from "react-icons/bi";
+import styles from "./styles.module.scss";
 
-const ListVideoInChapter = () => {
+const ListVideoInChapter = ({ lessons }) => {
   const [videos, setVideos] = useState([]);
 
   return (
     <>
-      <div className={styles.video}>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <span>
-            <BiMoviePlay
-              style={{
-                fontSize: '17px',
-                marginRight: '10px',
-                marginTop: '10px'
-              }}
-            />
-          </span>
-          <span>AWS Free Tier Overview</span>
+      {lessons.map((l, idx) => (
+        <div key={idx} className={styles.video}>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <span>
+              <BiMoviePlay
+                style={{
+                  fontSize: "17px",
+                  marginRight: "10px",
+                  marginTop: "10px",
+                }}
+              />
+            </span>
+            <span>
+              {l.lesson_name} {l.id_excercise && "(including excercise)"}
+            </span>
+          </div>
+          <div>{l.time}</div>
         </div>
-        <div>05:20</div>
-      </div>
-      <div className={styles.video}>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <span>
-            <BiMoviePlay
-              style={{
-                fontSize: '17px',
-                marginRight: '10px',
-                marginTop: '10px'
-              }}
-            />
-          </span>
-          <span>AWS Free Tier Overview</span>
-        </div>
-        <div>05:20</div>
-      </div>
-      <div className={styles.video}>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <span>
-            <BiMoviePlay
-              style={{
-                fontSize: '17px',
-                marginRight: '10px',
-                marginTop: '10px'
-              }}
-            />
-          </span>
-          <span>AWS Free Tier Overview</span>
-        </div>
-        <div>05:20</div>
-      </div>
+      ))}
     </>
   );
 };

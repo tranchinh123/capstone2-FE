@@ -1,8 +1,8 @@
-import { useEffect, useState, createContext, useContext } from 'react';
-import { notification } from 'antd';
-import Spin from '../components/common/spin';
+import { useEffect, useState, createContext, useContext } from "react";
+import { notification } from "antd";
+import Spin from "../components/common/spin";
 // import { ROLES } from '../constants/roles';
-import useAxios from '../hooks/useAxios';
+import useAxios from "../hooks/useAxios";
 
 export const MainContext = createContext({});
 
@@ -11,26 +11,26 @@ const MainContextProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSpinning, setIsSpinning] = useState(false);
   const [api, contextHolder] = notification.useNotification();
-  const { api: axiosApi }  = useAxios();
+  const { api: axiosApi } = useAxios();
 
   window.openNoti = (message, description) => {
     api.info({
       message,
       description,
-      placement: 'topRight',
+      placement: "topRight",
     });
   };
-
 
   const getUser = async () => {
     try {
       const { data } = await axiosApi.get("/me");
       setUser({
+        id: data.user.id,
         email: data.user.email,
         name: data.user.full_name,
         phone: data.user.phone,
         role: data.user.id_role,
-        address: data.user.address
+        address: data.user.address,
       });
       setIsLoading(false);
     } catch (error) {
@@ -50,23 +50,23 @@ const MainContextProvider = ({ children }) => {
     <MainContext.Provider
       value={{
         user,
-        setUser
+        setUser,
       }}
     >
       {isLoading ? (
         <div
           style={{
-            height: '100vh',
-            width: '100vw',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center'
+            height: "100vh",
+            width: "100vw",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
           <Spin />
         </div>
       ) : (
-        <div style={{ maxWidth: '2000px', margin: '0 auto' }}>
+        <div style={{ maxWidth: "2000px", margin: "0 auto" }}>
           {isSpinning && <Spin />}
           {contextHolder}
           {children}

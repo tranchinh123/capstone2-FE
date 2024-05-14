@@ -146,3 +146,12 @@
 /* .anticon svg {
   display: none;
 } */
+
+.ant-card-head {
+  border-bottom: none !important;
+  min-height: 10px !important;
+}
+
+.ant-card-body {
+  padding: 10px !important;
+}

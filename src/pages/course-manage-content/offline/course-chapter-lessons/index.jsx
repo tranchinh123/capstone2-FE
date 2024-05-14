@@ -1,18 +1,17 @@
-import { useEffect, useState } from 'react';
-import { Breadcrumb } from 'antd';
-import { useParams } from 'react-router-dom';
-import { arrayMove } from '@dnd-kit/sortable';
-import CreateChapterLessonModal from '../../../../components/common/modal/CreateChapterLessonModal';
-import LessonItem from './LessonItem';
-import DragDropList from '../DragDropList';
-import useAxios from '../../../../hooks/useAxios';
+import { useEffect, useState } from "react";
+import { Breadcrumb } from "antd";
+import { useParams } from "react-router-dom";
+import { arrayMove } from "@dnd-kit/sortable";
+import CreateChapterLessonModal from "../../../../components/common/modal/CreateChapterLessonModal";
+import LessonItem from "./LessonItem";
+import DragDropList from "../DragDropList";
+import useAxios from "../../../../hooks/useAxios";
 
 const CourseChapterLessons = ({
   selectedChapterId,
-  handleShowListOfChapter
+  handleShowListOfChapter,
 }) => {
   const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(false);
   const [isCreateLessonModalOpen, setIsCreateLessonModalOpen] = useState(false);
   const [selectedLessonId, setSelectedSessionId] = useState(null);
   const [editMode, setEditMode] = useState(false);
@@ -26,16 +25,17 @@ const CourseChapterLessons = ({
         id_cource: +id,
         id_chapter: +selectedChapterId,
       });
+      // setData(data.lessons.sort((a, b) => a.position - b.position));
       setData(data.lessons);
       window.showLoading(false);
     } catch (error) {
       window.showLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
     getLessons();
-  }, [])
+  }, []);
 
   const handleDragEnd = async (event) => {
     const { active, over } = event;
@@ -43,21 +43,16 @@ const CourseChapterLessons = ({
       try {
         const activeIndex = data.map((d) => d.id).indexOf(active.id);
         const overIndex = data.map((d) => d.id).indexOf(over.id);
-        console.log(arrayMove(data, activeIndex, overIndex));
         setData(arrayMove(data, activeIndex, overIndex));
-        await api.post('/admin/lesson/change-position', {
+        await api.post("/admin/lesson/change-position", {
           id_cource: +id,
           id_chapter: +selectedChapterId,
           id_previous: active.id,
-          id_next: over.id
-        })
-        // setData((data) => {
-        //   const activeIndex = data.map((d) => d.id).indexOf(active.id);
-        //   const overIndex = data.map((d) => d.id).indexOf(over.id);
-        //   return arrayMove(data, activeIndex, overIndex);
-        // });
+          id_next: over.id,
+        });
+        getLessons();
       } catch (error) {
-        console.log(error, 'error');
+        console.log(error, "error");
       }
     }
   };
@@ -71,21 +66,21 @@ const CourseChapterLessons = ({
   return (
     <>
       <Breadcrumb
-        style={{ marginBottom: '20px' }}
+        style={{ marginBottom: "20px" }}
         items={[
           {
             title: (
               <a type="button" onClick={() => handleShowListOfChapter()}>
                 Chapters
               </a>
-            )
+            ),
           },
           {
-            title: 'Chapter lessons'
-          }
+            title: "Chapter lessons",
+          },
         ]}
       />
-     {isCreateLessonModalOpen && (
+      {isCreateLessonModalOpen && (
         <CreateChapterLessonModal
           isModalOpen={isCreateLessonModalOpen}
           setIsModalOpen={setIsCreateLessonModalOpen}
@@ -94,7 +89,7 @@ const CourseChapterLessons = ({
           selectedChapterId={selectedChapterId}
           getLessons={getLessons}
         />
-     )}
+      )}
       <DragDropList
         handleDragEnd={handleDragEnd}
         data={data}
