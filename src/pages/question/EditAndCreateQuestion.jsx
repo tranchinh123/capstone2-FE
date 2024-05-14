@@ -1,10 +1,6 @@
 import { useEffect, useState } from "react";
 import { Select, Collapse, Input, Button, Tooltip } from "antd";
-import {
-  PlusOutlined,
-  FileDoneOutlined,
-  CheckOutlined,
-} from "@ant-design/icons";
+import { PlusOutlined, CheckOutlined } from "@ant-design/icons";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { FiAlertCircle } from "react-icons/fi";
 import { CiBoxList } from "react-icons/ci";
@@ -16,7 +12,11 @@ import "react-quill/dist/quill.snow.css";
 import styles from "./styles.module.scss";
 import useAxios from "../../hooks/useAxios";
 import { useParams } from "react-router";
+<<<<<<< HEAD
 import { useNavigate } from 'react-router-dom';
+=======
+import { useNavigate } from "react-router-dom";
+>>>>>>> doing-onl-off-excercise
 const { TextArea } = Input;
 
 const INITIAL_MULTIPLE_QUESTION = {
@@ -26,7 +26,11 @@ const INITIAL_MULTIPLE_QUESTION = {
   correct_answer: null,
   // mark: null,
   explain: "",
+<<<<<<< HEAD
   question_name: ''
+=======
+  question_name: "",
+>>>>>>> doing-onl-off-excercise
 };
 
 const INITIAL_ESSAY_QUESTION = {
@@ -34,7 +38,11 @@ const INITIAL_ESSAY_QUESTION = {
   // question: '',
   // mark: null,
   explain: "",
+<<<<<<< HEAD
   question_name: ''
+=======
+  question_name: "",
+>>>>>>> doing-onl-off-excercise
 };
 
 const EditAndCreateQuestion = () => {
@@ -51,11 +59,16 @@ const EditAndCreateQuestion = () => {
       try {
         const { data } = await api.get(`/admin/question/get-data/${id}`);
         let questionInfo;
+<<<<<<< HEAD
         if(data.question.question_type === 0) {
+=======
+        if (data.question.question_type === 0) {
+>>>>>>> doing-onl-off-excercise
           questionInfo = {
             answers: JSON.parse(data.question.answers),
             correct_answer: data.question.correct_answer,
             explain: data.question.explain,
+<<<<<<< HEAD
             question_name: data.question?.question_name
           }
         } else {
@@ -75,6 +88,27 @@ const EditAndCreateQuestion = () => {
       handleGetQuestionInfo();
     }
   }, [])
+=======
+            question_name: data.question?.question_name,
+          };
+        } else {
+          questionInfo = {
+            explain: data.question.explain,
+            question_name: data.question?.question_name,
+          };
+        }
+        setQuestion(data.question.question);
+        setQuestionInfo(questionInfo);
+        setSelectedQuestionType(data.question.question_type);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    if (id) {
+      handleGetQuestionInfo();
+    }
+  }, []);
+>>>>>>> doing-onl-off-excercise
 
   const handleChangeSelectedQuestionType = (value) => {
     if (value === 1) {
@@ -133,6 +167,12 @@ const EditAndCreateQuestion = () => {
     setQuestionInfo(newQuestionInfo);
   }
 
+  const handleChangeQuestionName = (value) => {
+    const newQuestionInfo = { ...questionInfo };
+    newQuestionInfo.question_name = value;
+    setQuestionInfo(newQuestionInfo);
+  };
+
   const handleAIQuestionCreate = (result) => {
     const newQuestionInfo = { ...questionInfo };
     newQuestionInfo.answers = result.answers;
@@ -145,6 +185,7 @@ const EditAndCreateQuestion = () => {
   };
 
   const handleCreateQuestion = async () => {
+<<<<<<< HEAD
     if(selectedQuestionType === 0) {
       if(questionInfo.answers.includes('')) {
         window.openNoti('Message', 'Option can not be empty.');
@@ -168,11 +209,43 @@ const EditAndCreateQuestion = () => {
     if(questionInfo.question_name === '') {
       window.openNoti('Message', 'Please enter question name.');
       return;    
+=======
+    if (selectedQuestionType === 0) {
+      if (questionInfo.answers.includes("")) {
+        window.openNoti("Message", "Option can not be empty.");
+        return;
+      }
+
+      if (new Set(questionInfo.answers).size !== questionInfo.answers.length) {
+        window.openNoti("Message", "The answer values ​​cannot overlap.");
+        return;
+      }
+
+      if (questionInfo.correct_answer === null) {
+        window.openNoti("Message", "Please select correct answer.");
+        return;
+      }
     }
+
+    if (question === "<p><br></p>") {
+      window.openNoti("Message", "Please enter question content.");
+      return;
+    }
+
+    if (
+      questionInfo.question_name === "" ||
+      questionInfo.question_name === undefined
+    ) {
+      window.openNoti("Message", "Please enter question name.");
+      return;
+>>>>>>> doing-onl-off-excercise
+    }
+
     if (questionInfo.explain === "") {
       window.openNoti("Message", "Please enter explain.");
       return;
     }
+<<<<<<< HEAD
     
     const newQuestion = { ...questionInfo, question };
       try {
@@ -193,6 +266,37 @@ const EditAndCreateQuestion = () => {
         window.showLoading(false);
         window.openNoti('Message', `Failed to ${id ? 'update' : 'create'} new question`);
         console.log(error);
+=======
+
+    const newQuestion = { ...questionInfo, question };
+    console.log(question, "question");
+
+    try {
+      window.showLoading(true);
+      await api.post(`/admin/question/${id ? "update" : "create"}`, {
+        id: id,
+        question: newQuestion?.question,
+        explain: newQuestion?.explain,
+        answers: JSON.stringify(newQuestion?.answers),
+        correct_answer: newQuestion?.correct_answer,
+        question_type: selectedQuestionType,
+        question_name: newQuestion?.question_name,
+        // changed_schedules: 1/0
+      });
+      window.showLoading(false);
+      window.openNoti(
+        "Message",
+        `${id ? "Update" : "Create"} new question successfully`
+      );
+      navigate("/question");
+    } catch (error) {
+      window.showLoading(false);
+      window.openNoti(
+        "Message",
+        `Failed to ${id ? "update" : "create"} new question`
+      );
+      console.log(error);
+>>>>>>> doing-onl-off-excercise
     }
   };
   console.log(question, 'question');
@@ -213,6 +317,7 @@ const EditAndCreateQuestion = () => {
             }}
             size="large"
             // onChange={(value) => setSelectedQuestionType(value)}
+            value={selectedQuestionType}
             onChange={(value) => handleChangeSelectedQuestionType(value)}
             value={selectedQuestionType}
             placeholder={
@@ -270,10 +375,21 @@ const EditAndCreateQuestion = () => {
                   }}
                 >
                   <div>
+<<<<<<< HEAD
                     <h3>Question content</h3>
                     <div style={{ marginBottom: '10px' }}>
                       <h4>Question name</h4>
                       <Input value={questionInfo.question_name} onChange={(e) => handleChangeQuestionName(e.target.value)} />
+=======
+                    <div style={{ marginBottom: "10px" }}>
+                      <h4>Question name</h4>
+                      <Input
+                        value={questionInfo.question_name}
+                        onChange={(e) =>
+                          handleChangeQuestionName(e.target.value)
+                        }
+                      />
+>>>>>>> doing-onl-off-excercise
                     </div>
                     <h4>Question content</h4>
                     {/* <ReactQuill theme="snow" modules={modules} value={questionInfo?.question} onChange={handleChangeQuestion} /> */}
@@ -316,6 +432,7 @@ const EditAndCreateQuestion = () => {
                     )}
                   </div>
                   <div>
+<<<<<<< HEAD
                     {/* <h3> */}
                       <FileDoneOutlined /> {"   "} Question mark
                     {/* </h3> */}
@@ -328,6 +445,12 @@ const EditAndCreateQuestion = () => {
                         })
                       }
                     /> */}
+=======
+                    {/* <h3>
+                      <FileDoneOutlined /> {'   '} Question mark
+                    </h3>
+                    <Input value={questionInfo?.mark} onChange={(e) => setQuestionInfo({ ...questionInfo, mark: +e.target.value })} /> */}
+>>>>>>> doing-onl-off-excercise
                     <TextArea
                       style={{ marginTop: "20px" }}
                       value={questionInfo?.explain}
@@ -342,7 +465,11 @@ const EditAndCreateQuestion = () => {
                       style={{ marginTop: "10px", width: "100%" }}
                       onClick={handleCreateQuestion}
                     >
+<<<<<<< HEAD
                        {id ? 'Update' : 'Create'}
+=======
+                      {id ? "Update" : "Create"}
+>>>>>>> doing-onl-off-excercise
                     </Button>
                     <p style={{ marginTop: "4px" }}>
                       Correct answer{"  "}

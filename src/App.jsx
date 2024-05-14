@@ -24,7 +24,11 @@ import ClassTeachingDetailPage from "./pages/classes/teaching/students";
 import StudentExcercisesPage from "./pages/classes/teaching/student-excercises";
 import StudentExcerciseMarking from "./pages/classes/teaching/student-excercise-marking";
 import ClassExcercisePage from "./pages/classes/learning/excercises";
+import AchievementsPage from "./pages/achievements";
+import ResultPage from "./pages/result";
+import NotAllowPage from "./pages/not-allow";
 import NotFoundPage from "./pages/404";
+import DeletePage from "./pages/delete";
 
 const App = () => {
   return (
@@ -104,15 +108,12 @@ const App = () => {
               </AppLayout>
             }
           />
+          {/* <Route path='/excercise/edit/:id' element={<AppLayout><ExcerciseEditPage /></AppLayout>} /> */}
           <Route
-            path="/excercise/edit/:id"
-            element={
-              <AppLayout>
-                <ExcerciseEditPage />
-              </AppLayout>
-            }
+            path="/excercise/do/:courseId/:excerciseId"
+            element={<DoingExcercisePage />}
           />
-          <Route path="/excercise/do/:id" element={<DoingExcercisePage />} />
+          <Route path="/result" element={<ResultPage />} />
           <Route
             path="/course-learning/online/:id"
             element={
@@ -205,6 +206,16 @@ const App = () => {
               </AppLayout>
             }
           />
+          <Route
+            path="/achievements"
+            element={
+              <AppLayout>
+                <AchievementsPage />
+              </AppLayout>
+            }
+          />
+          {/* <Route path='/not-allow' element={<NotAllowPage />} /> */}
+          <Route path="/delete" element={<DeletePage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </MainContextProvider>

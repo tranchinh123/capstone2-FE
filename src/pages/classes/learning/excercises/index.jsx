@@ -1,40 +1,71 @@
-import React from "react";
-import { Avatar, List, Switch } from "antd";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { List, Popconfirm } from "antd";
+import { useNavigate, useParams } from "react-router-dom";
+import useAxios from "../../../../hooks/useAxios";
 
-const data = [
-  {
-    title: "Ant Design Title 1",
-  },
-  {
-    title: "Ant Design Title 2",
-  },
-  {
-    title: "Ant Design Title 3",
-  },
-  {
-    title: "Ant Design Title 4",
-  },
-];
 const ClassExcercisePage = () => {
+  const [excercies, setExercises] = useState([]);
+  const { api } = useAxios();
+  const { id } = useParams();
+
   const navigate = useNavigate();
+
+  const confirm = () => {
+    navigate("/excercise/do/2");
+  };
+
+  const getExercises = async () => {
+    try {
+      const { data } = await api.get(`/user/list-excercise/${id}`);
+      setExercises(data.excercises);
+      console.log(data, "data");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getExercises();
+  }, []);
 
   return (
     <List
       itemLayout="horizontal"
-      dataSource={data}
+      dataSource={excercies}
       renderItem={(item, index) => (
         <List.Item
           actions={[
-            <a key="list-loadmore-more" onClick={() => navigate("2/excercies")}>
-              Take excercise
-            </a>,
+            <Popconfirm
+              key={index}
+              title="Taking the exercise"
+              description="Are you sure to take this exercise?"
+              onConfirm={() => confirm()}
+              okText="Yes"
+              cancelText="No"
+            >
+              <a>Take excercise</a>
+            </Popconfirm>,
           ]}
         >
           <List.Item.Meta
-            // avatar={<Avatar src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`} />}
-            title={<a href="https://ant.design">{item.title}</a>}
-            description={<div>Number of questions</div>}
+            title={<a href="https://ant.design">{item.excercise_name}</a>}
+            description={
+              <div>
+                <div>
+                  Number of questions:{" "}
+                  {JSON.parse(item.excercise_content).length}
+                </div>
+                <div>
+                  Total mark:{" "}
+                  {JSON.parse(item.excercise_content)
+                    .map((item) => +item.mark)
+                    .reduce(
+                      (accumulator, currentValue) => accumulator + currentValue,
+                      0
+                    )}
+                </div>
+              </div>
+            }
           />
         </List.Item>
       )}
