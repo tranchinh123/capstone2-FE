@@ -135,9 +135,11 @@ const Item = ({
                         ? "Prime excercise"
                         : "Excercise"}
                     </span>
+                    {l.id_excercise === courseInfo.final_excercise && (
                     <Tooltip title="This is a prime exercise, you will get certification if you pass this one.">
                       <FiAlertCircle />
                     </Tooltip>
+                  )}
                   </Button>
                 </Popconfirm>
               )}

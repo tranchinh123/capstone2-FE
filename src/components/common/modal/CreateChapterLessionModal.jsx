@@ -1,35 +1,28 @@
-import { useState, useEffect } from "react";
-import { Button, Form, Input, Modal, Upload, Select, TimePicker } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
-import useAxios from "../../../hooks/useAxios";
-import { useParams } from "react-router";
-import dayjs from "dayjs";
+import { useState, useEffect } from 'react';
+import { Button, Form, Input, Modal, Upload, Select, TimePicker } from 'antd';
+import { UploadOutlined } from '@ant-design/icons';
+import useAxios from '../../../hooks/useAxios';
+import { useParams } from 'react-router';
+import dayjs from 'dayjs';
+import { handleUpload } from '../../../constants/uploadToCloudinary';
 
-const CreateChapterLessonModal = ({
-  isModalOpen,
-  setIsModalOpen,
-  editMode,
-  selectedLessonId,
-  selectedChapterId,
-  getLessons,
-}) => {
+const CreateChapterLessonModal = ({ isModalOpen, setIsModalOpen, editMode, selectedLessonId, selectedChapterId, getLessons }) => {
   const [loading, setLoading] = useState(editMode);
   const [excerciseOptions, setExcerciseOptions] = useState([]);
   const [dataForEditMode, setDataForEditMode] = useState({
     id: null,
-    name: "",
+    name: '',
     fileList: null,
-    length: "",
-    excercise: "",
+    length: '',
+    excercise: ''
   });
   const [form] = Form.useForm();
   const { api } = useAxios();
   const { id } = useParams();
-
+  
   useEffect(() => {
     (async () => {
       try {
-<<<<<<< HEAD
         const { data } = await api.get('/admin/list-excercise');
         console.log(data.excercises, 'data');
         setExcerciseOptions(data.excercises.filter(v => v.excercise_type === 1).map(v => {
@@ -43,237 +36,144 @@ const CreateChapterLessonModal = ({
       }
     })()
   }, []);
-  console.log(excerciseOptions, 'excerciseOptions');
-=======
-        const { data } = await api.get("/admin/list-excercise");
-        console.log(data.excercises, "data");
-        setExcerciseOptions(
-          data.excercises
-            .filter((v) => v.excercise_type === 1)
-            .map((v) => {
-              return {
-                value: v.id,
-                label: v.excercise_name,
-              };
-            })
-        );
-      } catch (error) {
-        console.log(error);
-      }
-    })();
-  }, []);
 
->>>>>>> doing-onl-off-excercise
   const handleGetLessonDetail = async () => {
     try {
-      const { data } = await api.get(
-        `/admin/lesson/get-data/${selectedLessonId}`
-      );
-      setDataForEditMode({
-        ...dataForEditMode,
+      const { data } = await api.get(`/admin/lesson/get-data/${selectedLessonId}`);
+      setDataForEditMode({ 
+        ...dataForEditMode, 
         id: data.lesson.id,
         name: data.lesson.lesson_name,
         length: data.lesson.time,
-<<<<<<< HEAD
         fileList: [{ name: data.lesson.lesson_video, url: data.lesson.lesson_video }],
         excercise: data.lesson.id_excercise
-=======
-        fileList: [
-          { name: data.lesson.lesson_video, url: data.lesson.lesson_video },
-        ],
-        excercise: data.lesson.id_excercise,
->>>>>>> doing-onl-off-excercise
       });
       console.log(data);
       setLoading(false);
     } catch (error) {
-      setLoading(false);
+      setLoading(false)
       console.log(error);
     }
-  };
+  }
 
   const createNewLesson = async (name, video, time, id_excercise) => {
     window.showLoading(true);
+    // const cloudinary_video = await handleUpload(video);
+
     try {
       const formData = new FormData();
-<<<<<<< HEAD
       formData.append('id', dataForEditMode.id);
       formData.append('lesson_name', name);
       formData.append('lesson_video', video);
       formData.append('time', time);
-      formData.append('id_excercise', id_excercise);
+      if(id_excercise) {
+        formData.append('id_excercise', id_excercise);
+      }
       formData.append('id_chapter', selectedChapterId);
       formData.append('id_cource', id);
-=======
-      formData.append("id", dataForEditMode.id);
-      formData.append("lesson_name", name);
-      formData.append("lesson_video", video);
-      formData.append("time", time);
-      if (id_excercise) {
-        formData.append("id_excercise", id_excercise);
-      }
-      formData.append("id_chapter", selectedChapterId);
-      formData.append("id_cource", id);
->>>>>>> doing-onl-off-excercise
       await api.post(
-        `/admin/lesson/${editMode ? "update" : "create"}`,
+        `/admin/lesson/${ editMode ? 'update' : 'create'}`,
         formData,
         {
           headers: {
-            "Content-Type": "multipart/form-data",
-          },
+            'Content-Type': 'multipart/form-data'
+          }
         }
       );
       window.showLoading(false);
       setIsModalOpen(false);
-      window.openNoti("Message", "Create new lesson successfully.");
+      window.openNoti('Message', 'Create new lesson successfully.');
       getLessons();
     } catch (error) {
-      console.log(error, "error");
+      console.log(error, 'error');
       window.showLoading(false);
-      window.openNoti("Message", "Failed to create new lesson.");
+      window.openNoti('Message', 'Failed to create new lesson.');
     }
-  };
+  }
 
   const onFinish = (values) => {
-    if (editMode) {
+    if(editMode) {
       const file = dataForEditMode.fileList[0].url || values.resource.file;
-<<<<<<< HEAD
       createNewLesson(values.name, file, String(values.video_length.$d).split(' ')[4], values?.excercise);
     } else {
       createNewLesson(values.name, values.resource.file, String(values.video_length.$d).split(' ')[4], values?.excercise);
-=======
-      createNewLesson(
-        values.name,
-        file,
-        String(values.video_length.$d).split(" ")[4],
-        values?.excercise
-      );
-    } else {
-      createNewLesson(
-        values.name,
-        values.resource.file,
-        String(values.video_length.$d).split(" ")[4],
-        values?.excercise
-      );
->>>>>>> doing-onl-off-excercise
     }
   };
 
   useEffect(() => {
-    if (editMode) {
+    if(editMode) {
       handleGetLessonDetail();
     }
   }, []);
-<<<<<<< HEAD
   
   console.log(dataForEditMode, 'dataForEditMode.excercise');
-=======
-
-  console.log(dataForEditMode, "dataForEditMode.excercise");
->>>>>>> doing-onl-off-excercise
   return (
     <Modal
-      title={`${editMode ? "Update" : "Create"} chapter lesson`}
+      title={`${editMode ? 'Update' : 'Create'} chapter lesson`}
       open={isModalOpen}
       onCancel={() => setIsModalOpen(false)}
       footer={() => <></>}
     >
-      {loading ? (
-        <></>
-      ) : (
+      {loading ? <></> : (
         <Form
           layout="vertical"
           form={form}
           style={{
-            maxWidth: 600,
+            maxWidth: 600
           }}
           onFinish={onFinish}
-          onFinishFailed={(errorInfo) => console.log(errorInfo, "errorInfo")}
+          onFinishFailed={errorInfo => console.log(errorInfo, 'errorInfo')}
         >
           <Form.Item
             label="Name of video"
             name="name"
             rules={[
               {
-                required: true,
-              },
+                required: true
+              }
             ]}
             initialValue={dataForEditMode.name}
           >
             <Input />
           </Form.Item>
-          <Form.Item
-            label="Video file"
-            name="resource"
-            initialValue={dataForEditMode.fileList}
-            rules={[
-              {
-                validator: () => {
-                  if (dataForEditMode.fileList.length === 0)
-                    return Promise.reject("Please upload video file");
-                  if (dataForEditMode.fileList.length > 0)
-                    return Promise.resolve();
-                },
-              },
-            ]}
-          >
+          <Form.Item label="Video file" name="resource" initialValue={dataForEditMode.fileList} rules={[
+            {
+              validator: () => {
+                if(dataForEditMode.fileList.length === 0) return Promise.reject('Please upload video file')
+                if(dataForEditMode.fileList.length > 0) return Promise.resolve();
+              }
+            }
+          ]}>
             <Upload
               name="file"
               beforeUpload={() => false}
               // onChange={(info) => console.log(info.file, 'info')}
-              style={{ borderColor: "" }}
+              style={{ borderColor: '' }}
               maxCount={1}
-              onChange={(info) =>
-                setDataForEditMode({
-                  ...dataForEditMode,
-                  fileList: info.fileList,
-                })
-              }
+              onChange={info => setDataForEditMode({ ...dataForEditMode, fileList: info.fileList })}
               fileList={dataForEditMode.fileList}
             >
               <Button icon={<UploadOutlined />}>Upload</Button>
             </Upload>
           </Form.Item>
-          <Form.Item
-            label="Video length"
-            name="video_length"
-            required
-            initialValue={
-              dataForEditMode.length
-                ? dayjs(dataForEditMode.length, "HH:mm:ss")
-                : null
-            }
-          >
+          <Form.Item label="Video length" name="video_length" required initialValue={dataForEditMode.length ? dayjs(dataForEditMode.length, 'HH:mm:ss') : null }>
             <TimePicker showNow={false} />
           </Form.Item>
-<<<<<<< HEAD
           <Form.Item label="Excercise" name="excercise" initialValue={dataForEditMode.excercise ? { value: dataForEditMode.excercise } : null}>
-=======
-          <Form.Item
-            label="Excercise"
-            name="excercise"
-            initialValue={
-              dataForEditMode.excercise
-                ? { value: dataForEditMode.excercise }
-                : null
-            }
-          >
->>>>>>> doing-onl-off-excercise
             <Select
               showSearch
               placeholder="Select excercise"
               filterOption={(input, option) =>
-                (option?.label ?? "")
+                (option?.label ?? '')
                   .toLocaleLowerCase()
                   .includes(input.toLocaleLowerCase())
               }
               options={excerciseOptions}
             />
           </Form.Item>
-          <Form.Item style={{ display: "flex", justifyContent: "flex-end" }}>
+          <Form.Item style={{ display: 'flex', justifyContent: 'flex-end' }}>
             <Button htmlType="submit" type="primary">
-              {editMode ? "Update" : "Create"}
+              {editMode ? 'Update' : 'Create'}
             </Button>
           </Form.Item>
         </Form>

@@ -1,22 +1,16 @@
 import { useState, useEffect } from 'react'
-import { List, Popconfirm } from 'antd';
-import { useNavigate, useParams } from 'react-router-dom';
+import { List } from 'antd';
+import { Link, useParams } from 'react-router-dom';
 import useAxios from '../../../../hooks/useAxios';
 
-const ClassExcercisePage = () => {
+const OnlineClassExcercisePage = () => {
   const [excercies, setExercises] = useState([]);
   const { api } = useAxios();
   const { id } = useParams();
 
-  const navigate = useNavigate();
-
-  const confirm = (excerciseId) => {
-    navigate(`/excercise/do/${id}/${excerciseId}?online=true`);
-  };
-
   const getExercises = async () => {
     try {
-      const { data }  = await api.get(`/user/list-excercise/${id}`);
+      const { data }  = await api.get(`/user/list-excercise-teaching/${id}`);
       setExercises(data.excercises)
       console.log(data, 'data');
     } catch (error) {
@@ -35,20 +29,12 @@ const ClassExcercisePage = () => {
     renderItem={(item, index) => (
       <List.Item
        actions={[
-          <Popconfirm
-            key={index}
-            title="Taking the exercise"
-            description="Are you sure to take this exercise?"
-            onConfirm={() => confirm(item.id)}
-            okText="Yes"
-            cancelText="No"
-          >
-            <a>Take excercise</a>
-          </Popconfirm>
+          // eslint-disable-next-line react/no-unescaped-entities
+          <Link key={index} to={`/classes/${id}/excercies/${item.id}`}>View learner's submissions</Link>
        ]}
       >
         <List.Item.Meta
-          title={<a href="https://ant.design">{item.excercise_name}</a>}
+          title={<span>{item.excercise_name}</span>}
           description={
             <div>
               <div>Number of questions: {JSON.parse(item.excercise_content).length}</div>
@@ -66,4 +52,4 @@ const ClassExcercisePage = () => {
   )
 }
 
-export default ClassExcercisePage
+export default OnlineClassExcercisePage

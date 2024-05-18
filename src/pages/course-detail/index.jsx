@@ -94,8 +94,8 @@ const CourseDetailPage = () => {
             <div className={styles.courseIntro}>
               <h1>{courseInfo.cource_name}</h1>
               <p>{courseInfo.cource_introduce}</p>
-              <span>Created by YouAccel Training</span>
-              <div style={{ alignSelf: "flex-end" }}>
+              {courseInfo.cource_type !== 0 && (
+            <div style={{ alignSelf: 'flex-end' }}>
                 <Button
                   type="primary"
                   style={{
@@ -117,17 +117,18 @@ const CourseDetailPage = () => {
                     Go to course
                   </Button>
                 )}
-              </div>
+               </div>
+            )}
             </div>
           </div>
 
           <div className={styles.courseContent}>
-            <h2>Course content</h2>
-            <Collapse
-              items={items}
-              defaultActiveKey={["0"]}
-              onChange={onChange}
-            />
+          {courseInfo.cource_type !== 0 ? (
+            <> 
+              <h2>Course content</h2>
+              <Collapse items={items} defaultActiveKey={['0']} onChange={onChange} />
+            </>
+          ) : <></>}
             <h2>Description</h2>
             <div
               dangerouslySetInnerHTML={{

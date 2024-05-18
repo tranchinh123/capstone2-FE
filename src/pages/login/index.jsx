@@ -44,7 +44,7 @@ const LoginPage = () => {
                 marginBottom: "10px",
               }}
             >
-              <h2>Welcome to ...</h2>
+              <h2>Welcome</h2>
             </div>
             <Form.Item label="Email" name="email">
               <Input value={email} onChange={(e) => setEmail(e.target.value)} />
